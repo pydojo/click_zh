@@ -1,58 +1,51 @@
 .. _setuptools-integration:
 
-Setuptools Integration
+Setuptools 标准库集成
 ======================
 
-When writing command line utilities, it's recommended to write them as
-modules that are distributed with setuptools instead of using Unix
-shebangs.
+当写完命令行工具代码后，第二件事就是写 setuptools 配置模块文件，
+而不再使用 Unix shebangs 技术了。
 
-Why would you want to do that?  There are a bunch of reasons:
+为什么要这样做？如下是这样做的原因:
 
-1.  One of the problems with the traditional approach is that the first
-    module the Python interpreter loads has an incorrect name.  This might
-    sound like a small issue but it has quite significant implications.
+1.  传统实现方式有一个问题，就是第一个模块被 Python 解释器加载时存在错误的名字。
+    这也许听起来是一个小问题，但这却能给你带来足够的头疼。
 
-    The first module is not called by its actual name, but the
-    interpreter renames it to ``__main__``.  While that is a perfectly
-    valid name it means that if another piece of code wants to import from
-    that module it will trigger the import a second time under its real
-    name and all of a sudden your code is imported twice.
+    第一个模块实际上不是命令名，但解释器会把模块名重命名给 ``__main__`` 。
+    在小学 Python 课程 Python 模块单元已经讲过。如果你想在其它模块导入
+    这个模块中其它函数时，这样会正确地处理成模块名，那么被导入模块会触发第二次
+    导入过程，并且所有代码都导入了 2 次。
 
-2.  Not on all platforms are things that easy to execute.  On Linux and OS
-    X you can add a comment to the beginning of the file (``#!/usr/bin/env
-    python``) and your script works like an executable (assuming it has
-    the executable bit set).  This however does not work on Windows.
-    While on Windows you can associate interpreters with file extensions
-    (like having everything ending in ``.py`` execute through the Python
-    interpreter) you will then run into issues if you want to use the
-    script in a virtualenv.
+2.  不是在所有的平台上都那么容易执行。在 Linux 和 OS X 系统上，你可以在模块首行
+    增加 (``#!/usr/bin/env python``) shebang 技术支持。然后你的脚本支持了可
+    执行工作方式 (当然还要设置可执行属性) 。不管如何做到的，但依然要使用例如
+     ``./example.py`` 的方式来执行。而在 Windows 系统上就要使用 ``example.py``
+     带有文件名后缀来执行 (因为要通过 Python 解释器来执行模块文件)。如果你想用
+     ``example`` 命令方式执行，或在虚拟环境中执行就会遇到问题。
 
-    In fact running a script in a virtualenv is an issue with OS X and
-    Linux as well.  With the traditional approach you need to have the
-    whole virtualenv activated so that the correct Python interpreter is
-    used.  Not very user friendly.
+    事实上运行一个脚本都是与系统层有关，而且传统的实现方法并不友好，并且要激活虚拟环境
+    才能正确使用 Python 解释器。
 
-3.  The main trick only works if the script is a Python module.  If your
-    application grows too large and you want to start using a package you
-    will run into issues.
+3.  如果只是一个 Python 模块文件的话，传统技巧还可以实现。
+    但如果你的应用成长为大型应用的话，然后你想使用一个包来启动应用，
+    那么运行时就会遇到许多问题。
 
-Introduction
+介绍
 ------------
 
-To bundle your script with setuptools, all you need is the script in a
-Python package and a ``setup.py`` file.
+要把你的脚本与 setuptools 绑定在一起，你需要做的所有事情就是
+为一个 Python 包的脚本写一个 ``setup.py`` 配置文件。
 
-Imagine this directory structure:
+想象一下此时的目录结构是:
 
 .. code-block:: text
 
     yourscript.py
     setup.py
 
-Contents of ``yourscript.py``:
+其中 ``yourscript.py`` 代码内容是:
 
-.. click:example::
+.. click:脚本示例代码::
 
     import click
 
@@ -61,7 +54,7 @@ Contents of ``yourscript.py``:
         """Example script."""
         click.echo('Hello World!')
 
-Contents of ``setup.py``:
+其中 ``setup.py`` 代码内容是:
 
 .. code-block:: python
 
@@ -81,19 +74,17 @@ Contents of ``setup.py``:
         },
     )
 
-The magic is in the ``entry_points`` parameter.  Below
-``console_scripts``, each line identifies one console script.  The first
-part before the equals sign (``=``) is the name of the script that should
-be generated, the second part is the import path followed by a colon
-(``:``) with the Click command.
+这里的奥妙在于 ``entry_points`` 入口点参数里。其中下面的
+``console_scripts`` 中每一行都是识别一条终端脚本。
+每行等号 (``=``) 前的部分是你写的 Python 模块名，指明生成脚本的模块，
+等号后面的第二部分是导入路径后跟着一个冒号 (``:``) 再跟着 Click 命令名。
 
-That's it.
+就这些！
 
-Testing The Script
+测试一下脚本
 ------------------
 
-To test the script, you can make a new virtualenv and then install your
-package:
+要测试脚本，你可以建立一个新的虚拟环境后安装你的脚本:
 
 .. code-block:: console
 
@@ -101,18 +92,17 @@ package:
     $ . venv/bin/activate
     $ pip install --editable .
 
-Afterwards, your command should be available:
+测试时安装要用可编辑模式，之后你的命令应该可以直接使用模块名了:
 
 .. click:run::
 
     invoke(cli, prog_name='yourscript')
 
-Scripts in Packages
+包里的脚本
 -------------------
 
-If your script is growing and you want to switch over to your script being
-contained in a Python package the changes necessary are minimal.  Let's
-assume your directory structure changed to this:
+如果你的脚本不断成长，并且你想要把脚本放到一个目录里的话，
+只需要在配置模块中很少的变更即可。假设你的目录结构变成了如下情况:
 
 .. code-block:: text
 
@@ -126,12 +116,12 @@ assume your directory structure changed to this:
                 yourscript.py
         setup.py
 
-In this case instead of using ``py_modules`` in your ``setup.py`` file you
-can use ``packages`` and the automatic package finding support of
-setuptools.  In addition to that it's also recommended to include other
-package data.
+在这种情况中，在你的 ``setup.py`` 配置文件里要用
+``packages`` 配置项代替 ``py_modules`` 配置项。
+然后使用 setuptools 标准库的 ``find_packages`` 函数来自动找到目录。
+另外也建议使用 ``include_package_data`` 配置项。
 
-These would be the modified contents of ``setup.py``:
+修改后的 ``setup.py`` 配置文件代码内容是:
 
 .. code-block:: python
 
@@ -151,3 +141,13 @@ These would be the modified contents of ``setup.py``:
             ],
         },
     )
+
+另外即使项目结构是如下也依然有效:
+
+.. code-block:: tree .
+
+    .
+    ├── yourpackage
+    │   └── scripts
+    │       └── yourscript.py
+    └── setup.py
