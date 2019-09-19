@@ -1,40 +1,37 @@
 \$ click\_
 ==========
 
-Click is a Python package for creating beautiful command line interfaces
-in a composable way with as little code as necessary. It's the "Command
-Line Interface Creation Kit". It's highly configurable but comes with
-sensible defaults out of the box.
+Click 是一个 Python 第三方库，为建立美好的命令行接口而开发的简单实用工具。
+用少量所需代码组合方式，建立了一套 “命令行接口创建工具集”。
+具有高度可配置性能，但默认采用明智的盒外技术。
 
-It aims to make the process of writing command line tools quick and fun
-while also preventing any frustration caused by the inability to
-implement an intended CLI API.
+目标是制作系统层命令行工具，快捷并愉悦地使用，让实现一种 CLI API 变的畅通无阻。
 
-Click in three points:
+Click 三点论:
 
--   Arbitrary nesting of commands
--   Automatic help page generation
--   Supports lazy loading of subcommands at runtime
+-   多命令嵌入式
+-   自动生成帮助页面信息
+-   支持运行时按需加载子命令
 
 
-Installing
+安装
 ----------
 
-Install and update using `pip`_:
+安装与更新都使用 `pip`_:
 
 .. code-block:: text
 
     $ pip install click
 
-Click supports Python 3.4 and newer, Python 2.7, and PyPy.
+Click 支持大于 Python 3.4 版本和 Python 2.7 以及 PyPy
 
 .. _pip: https://pip.pypa.io/en/stable/quickstart/
 
 
-A Simple Example
+来一个直接示例
 ----------------
 
-What does it look like? Here is an example of a simple Click program:
+那么 Click 看起来会是什么样子呢？下面就是一个简单的 Click 程序:
 
 .. code-block:: python
 
@@ -52,7 +49,7 @@ What does it look like? Here is an example of a simple Click program:
     if __name__ == '__main__':
         hello()
 
-And what it looks like when run:
+那么运行这个命令时会是什么效果呢:
 
 .. code-block:: text
 
@@ -63,25 +60,24 @@ And what it looks like when run:
     Hello, Click!
 
 
-Donate
+捐助
 ------
 
-The Pallets organization develops and supports Click and other popular
-packages. In order to grow the community of contributors and users, and
-allow the maintainers to devote more time to the projects, `please
-donate today`_.
+调色板组织开发并支持着 Click 和其它受欢迎的众多包。
+为贡献者和用户社区增长服务着，并且允许维护者们奉献
+更多时间到多项目上， `please donate today`_.
 
 .. _please donate today: https://palletsprojects.com/donate
 
 
-Links
+链接
 -----
 
-*   Website: https://palletsprojects.com/p/click/
-*   Documentation: https://click.palletsprojects.com/
-*   License: `BSD <https://github.com/pallets/click/blob/master/LICENSE.rst>`_
-*   Releases: https://pypi.org/project/click/
-*   Code: https://github.com/pallets/click
-*   Issue tracker: https://github.com/pallets/click/issues
-*   Test status: https://dev.azure.com/pallets/click/_build
-*   Official chat: https://discord.gg/t6rrQZH
+*   官网: https://palletsprojects.com/p/click/
+*   文档: https://click.palletsprojects.com/
+*   协议: `BSD <https://github.com/pallets/click/blob/master/LICENSE.rst>`_
+*   发布: https://pypi.org/project/click/
+*   代码: https://github.com/pallets/click
+*   问题追踪: https://github.com/pallets/click/issues
+*   测试状态: https://dev.azure.com/pallets/click/_build
+*   官方沟通频道: https://discord.gg/t6rrQZH
