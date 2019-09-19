@@ -1,6 +1,6 @@
 .. rst-class:: hide-header
 
-Welcome to Click
+欢迎来到 Click 库
 ================
 
 .. image:: _static/click-logo.png
@@ -8,22 +8,21 @@ Welcome to Click
     :scale: 50%
     :target: https://palletsprojects.com/p/click/
 
-Click is a Python package for creating beautiful command line interfaces
-in a composable way with as little code as necessary.  It's the "Command
-Line Interface Creation Kit".  It's highly configurable but comes with
-sensible defaults out of the box.
+Click 是一个用来建立漂亮的命令行接口 Python 第三方库，
+使用所需很少的代码就可以实现系统层简单实用的命令行工具。
+能够建立一套 “命令行接口创建工具集”，
+具有高度可配置性能，但默认采用明智的盒外技术。
 
-It aims to make the process of writing command line tools quick and fun
-while also preventing any frustration caused by the inability to implement
-an intended CLI API.
+目的是制作系统层命令行工具，快捷并愉悦地使用，
+让实现一种 CLI API 变的畅通无阻。
 
-Click in three points:
+Click 三点论:
 
--   arbitrary nesting of commands
--   automatic help page generation
--   supports lazy loading of subcommands at runtime
+-   多命令嵌入式
+-   自动生成帮助页面信息
+-   支持运行时按需加载子命令
 
-What does it look like?  Here is an example of a simple Click program:
+那么 Click 看起来会是什么样子呢？下面就是一个简单的 Click 程序::
 
 .. click:example::
 
@@ -41,27 +40,26 @@ What does it look like?  Here is an example of a simple Click program:
     if __name__ == '__main__':
         hello()
 
-And what it looks like when run:
+当运行时看起来可能会是如下样子:
 
 .. click:run::
 
     invoke(hello, ['--count=3'], prog_name='python hello.py', input='John\n')
 
-It automatically generates nicely formatted help pages:
+也会自动生成良好格式的帮助页面:
 
 .. click:run::
 
     invoke(hello, ['--help'], prog_name='python hello.py')
 
-You can get the library directly from PyPI::
+你可以直接从 PyPI 获得本库::
 
     pip install click
 
-Documentation
+文档
 -------------
 
-This part of the documentation guides you through all of the library's
-usage patterns.
+如下是文档部分的指导清单，贯穿了所有本库的用法模式。
 
 .. toctree::
    :maxdepth: 2
@@ -84,18 +82,18 @@ usage patterns.
    python3
    wincmd
 
-API Reference
+API 参考文档
 -------------
 
-If you are looking for information on a specific function, class, or
-method, this part of the documentation is for you.
+如果你正在寻找一个具体函数、类、或方法的信息，
+那么请看如下文档。
 
 .. toctree::
    :maxdepth: 2
 
    api
 
-Miscellaneous Pages
+杂项内容
 -------------------
 
 .. toctree::
