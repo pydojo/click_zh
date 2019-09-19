@@ -46,14 +46,11 @@ Click 支持大于 Python 3.4 版本和 Python 2.7 以及 PyPy
         for _ in range(count):
             click.echo("Hello, %s!" % name)
 
-    if __name__ == '__main__':
-        hello()
-
-那么运行这个命令时会是什么效果呢:
+与 ``setuptools`` 标准库结合安装后运行这个命令时会是什么效果呢:
 
 .. code-block:: text
 
-    $ python hello.py --count=3
+    $ hello --count 3
     Your name: Click
     Hello, Click!
     Hello, Click!
