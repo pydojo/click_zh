@@ -1,56 +1,54 @@
-Quickstart
+快速开始
 ==========
 
 .. currentmodule:: click
 
-You can get the library directly from PyPI::
+直接从 PyPI 上安装::
 
     pip install click
 
-The installation into a :ref:`virtualenv` is heavily recommended.
+强烈建议在虚拟环境中来安装，查看 :ref:`virtualenv` 参考文档。
 
 .. _virtualenv:
 
 virtualenv
 ----------
 
-Virtualenv is probably what you want to use for developing Click
-applications.
+Virtualenv 是建立虚拟环境的正确选择，对于开发 Click 应用来说亦然。
 
-What problem does virtualenv solve?  Chances are that you want to use it
-for other projects besides your Click script.  But the more projects you
-have, the more likely it is that you will be working with different
-versions of Python itself, or at least different versions of Python
-libraries.  Let's face it: quite often libraries break backwards
-compatibility, and it's unlikely that any serious application will have
-zero dependencies.  So what do you do if two or more of your projects have
-conflicting dependencies?
+虚拟环境 virtualenv 到底解决了什么问题？ 
+能够让你在许多其它项目中使用 Click 系统层命令模式。
+而且更多的项目都能够实现在不同的版本开发中，这就是虚拟环境能解决的。
+包括不同的 Python 版本，或不同的 Python 第三方库版本。
+正视虚拟环境：常常许多第三方库都会导致软件版本更新时出现断裂，
+让你感到以前用没问题，现在用就有问题了，并且每一个系列应用都会有依赖库。
+那么如果你的项目不止一两个的话，你就会遇到依赖冲突问题，这是一个头大的问题是吧？
 
-Virtualenv to the rescue!  Virtualenv enables multiple side-by-side
-installations of Python, one for each project.  It doesn't actually
-install separate copies of Python, but it does provide a clever way to
-keep different project environments isolated.  Let's see how virtualenv
-works.
+让 Virtualenv 虚拟环境来减轻头痛！
+虚拟环境开启了多种连续挨着的 Python 安装，
+即时对于每一个项目来说会存在多个 Python 版本的兼容情况。
+实际上不是分别安装不同的 Python 版本在系统上，
+虚拟环境提供了一种更聪明的方法来保持不同的项目环境，
+每个环境都彼此隔离。让我们看看虚拟环境是如何工作的吧。
 
-If you are on Mac OS X or Linux::
+如果你用的是 Mac OS X 或 Linux 系统的话::
 
     $ sudo pip install virtualenv
 
-One of these will probably install virtualenv on your system.  Maybe it's even
-in your package manager.  If you use Ubuntu, try::
+可以安装 virtualenv 虚拟环境库到你的系统上。
+也许需要先提前安装 `pip` 包管理器。如果你使用
+ Ubuntu 版本的 Linux 系统，那么尝试::
 
     $ sudo apt-get install python-virtualenv
 
-If you are on Windows (or none of the above methods worked) you must install
-``pip`` first.  For more information about this, see `installing pip`_.
-Once you have it installed, run the ``pip`` command from above, but without
-the `sudo` prefix.
+如果你用的是 Windows 系统的话， (上面的方法就无效了) 
+你必须先安装 ``pip`` 。关于更多这方面的信息查看 `installing pip`_.
+一旦完成了安装后，在 Windows 上运行 ``pip`` 命令不需要 `sudo` 命令。
 
 .. _installing pip: https://pip.readthedocs.io/en/latest/installing.html
 
-Once you have virtualenv installed, just fire up a shell and create
-your own environment.  I usually create a project folder and a `venv`
-folder within::
+当你安装完 virtualenv 虚拟环境库后，首先要在终端里建立你自己的虚拟环境。
+我常常建立一个项目文件夹后，在项目目录里建立一个虚拟环境文件夹 `venv`::
 
     $ mkdir myproject
     $ cd myproject
@@ -58,75 +56,72 @@ folder within::
     New python executable in venv/bin/python
     Installing setuptools, pip............done.
 
-Now, whenever you want to work on a project, you only have to activate the
-corresponding environment.  On OS X and Linux, do the following::
+现在不管什么时候你要工作在一个项目上，你只需要激活相关项目
+里的虚拟环境即可。在 OS X 和 Linux 系统上，按照如下操作::
 
     $ . venv/bin/activate
 
-If you are a Windows user, the following command is for you::
+如果在 Windows 系统上，操作如下::
 
     $ venv\scripts\activate
 
-Either way, you should now be using your virtualenv (notice how the prompt of
-your shell has changed to show the active environment).
+不管哪种方法，你激活成功后就说明正在使用项目的虚拟环境了
+ (注意终端里的提示符会有变化)
 
-And if you want to go back to the real world, use the following command::
+如果你想回到系统层环境，使用如下命令::
 
     $ deactivate
 
-After doing this, the prompt of your shell should be as familiar as before.
+关闭虚拟环境后，终端的提示符就是系统层环境的提示符了。
 
-Now, let's move on. Enter the following command to get Click activated in your
-virtualenv::
+在虚拟环境中我们来执行安装 Click 命令行库::
 
     $ pip install Click
 
-A few seconds later and you are good to go.
+几秒之后你就完成了准备工作。
 
-Screencast and Examples
+屏幕录制与示例
 -----------------------
 
-There is a screencast available which shows the basic API of Click and
-how to build simple applications with it.  It also explores how to build
-commands with subcommands.
+这里有一种屏幕录制视频，展示了如何用 Click 建立简单的应用。
+介绍了 Click 的基础 API 使用，也告诉你如何建立含有子命令的命令内容。
 
 *   `Building Command Line Applications with Click
     <https://www.youtube.com/watch?v=kNke39OZ2k0>`_
 
-Examples of Click applications can be found in the documentation as well
-as in the GitHub repository together with readme files:
+使用 Click 应用的示例可以在文档中找到，同时在 GitHub 仓库里含有相关文件:
 
-*   ``inout``: `File input and output
+*   ``inout``: `文件输入与输出
     <https://github.com/pallets/click/tree/master/examples/inout>`_
-*   ``naval``: `Port of docopt naval example
+*   ``naval``: `移植到 docopt 库的示例
     <https://github.com/pallets/click/tree/master/examples/naval>`_
-*   ``aliases``: `Command alias example
+*   ``aliases``: `命令别名示例
     <https://github.com/pallets/click/tree/master/examples/aliases>`_
-*   ``repo``: `Git-/Mercurial-like command line interface
+*   ``repo``: `Git 命令行接口和变体命令行结构
     <https://github.com/pallets/click/tree/master/examples/repo>`_
-*   ``complex``: `Complex example with plugin loading
+*   ``complex``: `含有插件加载的多层化示例
     <https://github.com/pallets/click/tree/master/examples/complex>`_
-*   ``validation``: `Custom parameter validation example
+*   ``validation``: `自定义参数验证示例
     <https://github.com/pallets/click/tree/master/examples/validation>`_
-*   ``colors``: `Colorama ANSI color support
+*   ``colors``: `彩色命令显示支持
     <https://github.com/pallets/click/tree/master/examples/colors>`_
-*   ``termui``: `Terminal UI functions demo
+*   ``termui``: `终端 UI 函数示范
     <https://github.com/pallets/click/tree/master/examples/termui>`_
-*   ``imagepipe``: `Multi command chaining demo
+*   ``imagepipe``: `多命令链示范
     <https://github.com/pallets/click/tree/master/examples/imagepipe>`_
 
-Basic Concepts - Creating a Command
+基础概念 - 建立一个命令
 -----------------------------------
 
-Click is based on declaring commands through decorators.  Internally, there
-is a non-decorator interface for advanced use cases, but it's discouraged
-for high-level usage.
+Click 是基于通过装饰器来声明命令的工作方式。
+内部里，是一个非装饰器接口提供给高级用例，但
+对于高级别用法来说是不鼓励这样使用的。
 
-A function becomes a Click command line tool by decorating it through
-:func:`click.command`.  At its simplest, just decorating a function
-with this decorator will make it into a callable script:
+一个 Python 函数要想变成一个终端命令，
+是通过 Click 的装饰器用法 :func:`click.command` 函数来实现的。
+简单实用的技术在于直接用它来装饰一个函数即可:
 
-.. click:example::
+.. click:示例::
 
     import click
 
@@ -134,56 +129,55 @@ with this decorator will make it into a callable script:
     def hello():
         click.echo('Hello World!')
 
-What's happening is that the decorator converts the function into a
-:class:`Command` which then can be invoked::
+上面的代码发生了什么？装饰器把函数变成一个
+:class:`Command` 类的实例，然后用脚本习语来触发::
 
     if __name__ == '__main__':
         hello()
 
-And what it looks like:
+那么这看起来会是什么样子呢？:
 
-.. click:run::
+.. click:运行命令时::
 
     invoke(hello, args=[], prog_name='python hello.py')
 
-And the corresponding help page:
+命令有帮助页面信息时会是:
 
-.. click:run::
+.. click:运行命令时::
 
     invoke(hello, args=['--help'], prog_name='python hello.py')
 
-Echoing
+回声
 -------
 
-Why does this example use :func:`echo` instead of the regular
-:func:`print` function?  The answer to this question is that Click
-attempts to support both Python 2 and Python 3 the same way and to be very
-robust even when the environment is misconfigured.  Click wants to be
-functional at least on a basic level even if everything is completely
-broken.
+为什么上面示例中会使用 :func:`echo` 函数来代替
+常规的 :func:`print` 函数呢？答案就是 Click
+ 意图是使用相同的方法来支持 Python 2 和 Python 3 ，
+并且这样会非常健壮，即使错误配置环境也能保证有效。
+ Click 在基础层上至少要是函数式的，即使每件事出现
+破裂也能保证功能独立性。
 
-What this means is that the :func:`echo` function applies some error
-correction in case the terminal is misconfigured instead of dying with an
-:exc:`UnicodeError`.
+那么 :func:`echo` 函数意味着什么？在函数中应用了
+一些错误纠正，在终端存在错误配置时用一个
+ :exc:`UnicodeError` 来代替死命令情况。
 
-As an added benefit, starting with Click 2.0, the echo function also
-has good support for ANSI colors.  It will automatically strip ANSI codes
-if the output stream is a file and if colorama is supported, ANSI colors
-will also work on Windows. Note that in Python 2, the :func:`echo` function
-does not parse color code information from bytearrays. See :ref:`ansi-colors`
-for more information.
+增加这项支持的好处是从 Click 2.0 开始的， echo 函数也
+良好地支持着 ANSI 彩色机制。它会自动地剥离 ANSI 代码内容，
+如果输出流数据是一个文件的话，并且支持彩色机制的话， ANSI 颜色
+也会在 Windows 系统上有效。注意在 Python 2 中，
+ :func:`echo` 函数是不能对来自字节阵列的颜色代码进行语法分析的。
+查看 :ref:`ansi-colors` 参考文档了解更多信息。
 
-If you don't need this, you can also use the `print()` construct /
-function.
+如果你不需要这种好处的话，你也可以使用 `print()` 函数。
 
-Nesting Commands
+嵌入命令
 ----------------
 
-Commands can be attached to other commands of type :class:`Group`.  This
-allows arbitrary nesting of scripts.  As an example here is a script that
-implements two commands for managing databases:
+许多命令可以跟在 :class:`Group` 类型的其它命令后面使用。
+这样就可以实现许多脚本的任何嵌入用法。这里有一个示例，为管理
+数据库实现了 2 个命令嵌入式使用:
 
-.. click:example::
+.. click:嵌入命令示例1::
 
     @click.group()
     def cli():
@@ -200,15 +194,14 @@ implements two commands for managing databases:
     cli.add_command(initdb)
     cli.add_command(dropdb)
 
-As you can see, the :func:`group` decorator works like the :func:`command`
-decorator, but creates a :class:`Group` object instead which can be given
-multiple subcommands that can be attached with :meth:`Group.add_command`.
+你可以明白 :func:`group` 装饰器工作起来就像 :func:`command` 装饰器一样，
+但它建立了一个 :class:`Group` 类实例，所以使用 :meth:`Group.add_command`
+ 方法后，才能够使用多个子命令方式。
 
-For simple scripts, it's also possible to automatically attach and create a
-command by using the :meth:`Group.command` decorator instead.  The above
-script can instead be written like this:
+杜宇简单的脚本来说，也可以直接使用 :meth:`Group.command` 装饰器来
+实现自动跟着建立一个命令行命令。那么上面的嵌入命令示例可以写成如下代码:
 
-.. click:example::
+.. click:嵌入命令示例2::
 
     @click.group()
     def cli():
@@ -222,18 +215,19 @@ script can instead be written like this:
     def dropdb():
         click.echo('Dropped the database')
 
-You would then invoke the :class:`Group` in your setuptools entry points or
-other invocations::
+然后你应该在 setuptools 的配置文件入口点参数中来触发 :class:`Group` 类，
+或者采用脚本习语方式来触发::
 
     if __name__ == '__main__':
         cli()
 
-Adding Parameters
+增加命令参数
 -----------------
 
-To add parameters, use the :func:`option` and :func:`argument` decorators:
+要给一个命令增加参数，使用 :func:`option` 函数和
+ :func:`argument` 装饰器:
 
-.. click:example::
+.. click:增加命令参数示例::
 
     @click.command()
     @click.option('--count', default=1, help='number of greetings')
@@ -242,36 +236,33 @@ To add parameters, use the :func:`option` and :func:`argument` decorators:
         for x in range(count):
             click.echo('Hello %s!' % name)
 
-What it looks like:
+触发时是什么样子呢:
 
-.. click:run::
+.. click:运行命令时::
 
     invoke(hello, args=['--help'], prog_name='python hello.py')
 
 .. _switching-to-setuptools:
 
-Switching to Setuptools
+切换到 Setuptools 标准库
 -----------------------
 
-In the code you wrote so far there is a block at the end of the file which
-looks like this: ``if __name__ == '__main__':``.  This is traditionally
-how a standalone Python file looks like.  With Click you can continue
-doing that, but there are better ways through setuptools.
+上面所写的那些代码中可执行区域的脚本习语用法:
+ ``if __name__ == '__main__':`` 是传统的
+运行独立 Python 模块的方式。在使用 Click 库时，
+你可以继续这样做，但通过 setuptools 标准库是更好的方式。
 
-There are two main (and many more) reasons for this:
+这样做的主要原因有 2 个 (还有更多原因) :
 
-The first one is that setuptools automatically generates executable
-wrappers for Windows so your command line utilities work on Windows too.
+第一个：是 setuptools 标准库自动生成可执行打包器给 Windows 系统，
+所以你的命令行工具在 Windows 系统上也有效。
 
-The second reason is that setuptools scripts work with virtualenv on Unix
-without the virtualenv having to be activated.  This is a very useful
-concept which allows you to bundle your scripts with all requirements into
-a virtualenv.
+第二个：是 setuptools 标准库建立的脚本使用 virtualenv 工作在
+没有激活虚拟环境的 Unix 系统上。这是非常有用的概念，因为让你把脚本
+与所有需求绑定到一个虚拟环境中。
 
-Click is perfectly equipped to work with that and in fact the rest of the
-documentation will assume that you are writing applications through
-setuptools.
+Click 更愿意与这种方式工作，并且事实上后面的文档内容都是建立在
+这个假设前提之上，所以都要写一个 setuptools 标准库配置文件。
 
-I strongly recommend to have a look at the :ref:`setuptools-integration`
-chapter before reading the rest as the examples assume that you will
-be using setuptools.
+我强烈建议接下来阅读 :ref:`setuptools-integration` 参考文档，
+然后再去阅读其它示例，先把本文档中的示例与 setuptools 结合起来运行成功再说。
