@@ -1,26 +1,26 @@
 .. _arguments:
 
-Arguments
+参数
 =========
 
 .. currentmodule:: click
 
-Arguments work similarly to :ref:`options <options>` but are positional.
-They also only support a subset of the features of options due to their
-syntactical nature. Click will also not attempt to document arguments for
-you and wants you to :ref:`document them manually <documenting-arguments>`
-in order to avoid ugly help pages.
+参数工作起来与 :ref:`options <options>` 选项参考文档中类似，
+但参数都是位置参数，不是可选项。由于句法的实质，它们也仅支持
+可选项特性中的部分特性。 Click 也不会为你文档话参数，
+并且想要你自己去根据 :ref:`document them manually <documenting-arguments>`
+ 参考文档来手动书写，这是为了避免帮助页面不好看。
 
-Basic Arguments
+基础参数
 ---------------
 
-The most basic option is a simple string argument of one value.  If no
-type is provided, the type of the default value is used, and if no default
-value is provided, the type is assumed to be :data:`STRING`.
+最基础的选择就是直接一个字符串作为参数值。
+如果不提供类型的话，会使用默认值的类型，并且
+如果不提供默认参数值的话，类型会假设为 :data:`STRING` 字符串数据类型。
 
-Example:
+示例:
 
-.. click:example::
+.. click:基础参数示例::
 
     @click.command()
     @click.argument('filename')
@@ -28,26 +28,24 @@ Example:
         """Print FILENAME."""
         click.echo(filename)
 
-And what it looks like:
+运行时会是这个样子:
 
 .. click:run::
 
     invoke(touch, args=['foo.txt'])
 
-Variadic Arguments
+多变参数
 ------------------
 
-The second most common version is variadic arguments where a specific (or
-unlimited) number of arguments is accepted.  This can be controlled with
-the ``nargs`` parameter.  If it is set to ``-1``, then an unlimited number
-of arguments is accepted.
+第二个最共性的参数版本就是多变参数，就是一个具体的 (或不限制) 被接受的参数数量。
+这个数量可以用 ``nargs`` 参数来控制。如果设置成 ``-1`` 的话，既不限制参数数量。
 
-The value is then passed as a tuple.  Note that only one argument can be
-set to ``nargs=-1``, as it will eat up all arguments.
+参数值稍后会带入成一个元组。注意只有一个参数可以设置成 ``nargs=-1`` 情况，
+因为它会吃掉所有的参数。
 
-Example:
+示例:
 
-.. click:example::
+.. click:多变参数示例::
 
     @click.command()
     @click.argument('src', nargs=-1)
@@ -57,47 +55,46 @@ Example:
         for fn in src:
             click.echo('move %s to folder %s' % (fn, dst))
 
-And what it looks like:
+运行时可能会是如下样子:
 
 .. click:run::
 
     invoke(copy, args=['foo.txt', 'bar.txt', 'my_folder'])
 
-Note that this is not how you would write this application.  The reason
-for this is that in this particular example the arguments are defined as
-strings.  Filenames, however, are not strings!  They might be on certain
-operating systems, but not necessarily on all.  For better ways to write
-this, see the next sections.
+注意这个示例不是你如何写这类应用程序用的代码。
+因为只是为了讲解如何使用，这里的文件都定义成字符串了。
+文件名不应该是字符串！文件名存储在某种操作系统上的东西，
+要写对文件的操作，更好的方法是看下面的部分内容。
 
-.. admonition:: Note on Non-Empty Variadic Arguments
+.. admonition:: 注意非空多变参数
 
-   If you come from ``argparse``, you might be missing support for setting
-   ``nargs`` to ``+`` to indicate that at least one argument is required.
+   如果使用过 ``argparse`` 库的话，
+   你也许无法使用 ``nargs`` 设置成 ``+`` 来指明
+   至少需要一个参数。
 
-   This is supported by setting ``required=True``.  However, this should
-   not be used if you can avoid it as we believe scripts should gracefully
-   degrade into becoming noops if a variadic argument is empty.  The
-   reason for this is that very often, scripts are invoked with wildcard
-   inputs from the command line and they should not error out if the
-   wildcard is empty.
+   这种支持是通过设置 ``required=True`` 来实现。
+   不管如何做到的，不再使用这种设置了，如果你可以避免
+   这点的话，我们相信脚本都是有责任恩典式地降级成非空操作，
+   如果一个多变参数是空的话，也没问题。原因就是许多脚本常常
+   与命令行输入的通配符来触发，如果通配符是空的话，脚本不应该
+   出现错误信息。
 
 .. _file-args:
 
-File Arguments
+文件参数
 --------------
 
-Since all the examples have already worked with filenames, it makes sense
-to explain how to deal with files properly.  Command line tools are more
-fun if they work with files the Unix way, which is to accept ``-`` as a
-special file that refers to stdin/stdout.
+由于所有的示例都要与文件名一起工作，那么解释如何正确处理文件就是一件有意义的事情。
+命令行工具都很有趣，如果用 Unix 风格的命令行与许多文件一起工作的话，
+那么要能把 ``-`` 接受成一个特殊文件，这个文件就是指向标准输入/标准输出。
 
-Click supports this through the :class:`click.File` type which
-intelligently handles files for you.  It also deals with Unicode and bytes
-correctly for all versions of Python so your script stays very portable.
+Click 通过 :class:`click.File` 类来支持这种文件类型，
+会智能地为你处理这些文件。也会正确地处理 Unicode 和 字节，
+不管 Python 是哪个版本，所以你的脚本会非常具有移植性。
 
-Example:
+示例:
 
-.. click:example::
+.. click:文件参数示例::
 
     @click.command()
     @click.argument('input', type=click.File('rb'))
@@ -110,7 +107,7 @@ Example:
                 break
             output.write(chunk)
 
-And what it does:
+这个例子做了什么:
 
 .. click:run::
 
@@ -119,24 +116,23 @@ And what it does:
                terminate_input=True)
         invoke(inout, args=['hello.txt', '-'])
 
-File Path Arguments
+文件路径参数
 -------------------
 
-In the previous example, the files were opened immediately.  But what if
-we just want the filename?  The naïve way is to use the default string
-argument type.  However, remember that Click is Unicode-based, so the string
-will always be a Unicode value.  Unfortunately, filenames can be Unicode or
-bytes depending on which operating system is being used.  As such, the type
-is insufficient.
+前面的例子中，文件都是立即被打开。
+但如果我们只想用一个文件名呢？幼稚的方法是使用默认字符串参数类型。
+不管如何做到的，记住 Click 是基于 Unicode 的，所以字符串会一直
+是一种 Unicode 值。不幸的是，文件名可以是 Unicode 也可以是字节，
+这要根据你使用的是什么操作系统来决定了。因为操作系统的缘故，
+字符串类型还不足以解决问题。
 
-Instead, you should be using the :class:`Path` type, which automatically
-handles this ambiguity.  Not only will it return either bytes or Unicode
-depending on what makes more sense, but it will also be able to do some
-basic checks for you such as existence checks.
+相反，你应该使用 :class:`Path` 类，它可以自动处理这种歧义情况。
+不仅根据系统来决定返回的是字节还是 Unicode 值，还能够做一些基础
+检查，例如路径是否存在。
 
-Example:
+示例:
 
-.. click:example::
+.. click:文件路径参数::
 
     @click.command()
     @click.argument('filename', type=click.Path(exists=True))
@@ -144,7 +140,7 @@ Example:
         """Print FILENAME if the file exists."""
         click.echo(click.format_filename(filename))
 
-And what it does:
+示例代码做了什么:
 
 .. click:run::
 
@@ -156,49 +152,45 @@ And what it does:
         invoke(touch, args=['missing.txt'])
 
 
-File Opening Safety
+文件安全打开
 -------------------
 
-The :class:`FileType` type has one problem it needs to deal with, and that
-is to decide when to open a file.  The default behavior is to be
-"intelligent" about it.  What this means is that it will open stdin/stdout
-and files opened for reading immediately.  This will give the user direct
-feedback when a file cannot be opened, but it will only open files
-for writing the first time an IO operation is performed by automatically
-wrapping the file in a special wrapper.
+在 :class:`FileType` 类上有一个问题需要处理，
+那就是什么时候打开一个文件。默认行为是智能化。
+这里的智能化是什么意思？就是会打开 标准输入/标准输出
+ 后立即打开文件进行读取。当一个文件无法开始时，
+这样做会给用户直接反馈，但这种智能化只为第一次写
+一项 IO 操作来打开文件，而 IO 操作是通过把文件
+打包进一个特殊的打包器来执行。
 
-This behavior can be forced by passing ``lazy=True`` or ``lazy=False`` to
-the constructor.  If the file is opened lazily, it will fail its first IO
-operation by raising an :exc:`FileError`.
+这种行为可以通过代入 ``lazy=True`` 或 ``lazy=False`` 给
+构造器来控制。如果文件采用懒蛋模式打开的话，会让第一次 IO 操作
+失败，抛出一个 :exc:`FileError` 例外错误。
 
-Since files opened for writing will typically immediately empty the file,
-the lazy mode should only be disabled if the developer is absolutely sure
-that this is intended behavior.
+由于为写而打开文件典型都是立即打开一个空文件，
+如果开发者要的就是这种行为，那么懒蛋模式应该被禁用。
 
-Forcing lazy mode is also very useful to avoid resource handling
-confusion.  If a file is opened in lazy mode, it will receive a
-``close_intelligently`` method that can help figure out if the file
-needs closing or not.  This is not needed for parameters, but is
-necessary for manually prompting with the :func:`prompt` function as you
-do not know if a stream like stdout was opened (which was already open
-before) or a real file that needs closing.
+开启懒蛋模式对避免资源处理混乱是非常有用的。如果一个文件
+以懒蛋模式打开的话，会接收到一个 ``close_intelligently`` 方法，
+这个方法可以帮助弄清楚是否需要关闭文件。对于参数来说这是不需要的，
+但可以用 :func:`prompt` 函数来手动提醒，因为你不知道一个流数据
+是否打开了，就像标准输出就是一种流数据 (都是一直提前打开) 
+或者是否需要关闭一个真实的文件。
 
-Starting with Click 2.0, it is also possible to open files in atomic mode by
-passing ``atomic=True``.  In atomic mode, all writes go into a separate
-file in the same folder, and upon completion, the file will be moved over to
-the original location.  This is useful if a file regularly read by other
-users is modified.
+从 Click 2.0 版本开始，通过代入 ``atomic=True`` 也可以
+以原子价模式打开文件。原子价模式中，所有写入都会进入相同文件夹
+中的各个文件里，然后完成写操作，文件会被移到最初的位置。
+如果一个常规由其它用户读取的文件被修改时，这是有用的技术。
 
-Environment Variables
+环境变量
 ---------------------
 
-Like options, arguments can also grab values from an environment variable.
-Unlike options, however, this is only supported for explicitly named
-environment variables.
+像可选项一样，参数也可以从一个环境变量获得值。
+与可选项不同，不管如何做到的，参数只支持明确的命名环境变量。
 
-Example usage:
+示例用法:
 
-.. click:example::
+.. click:环境变量示例::
 
     @click.command()
     @click.argument('src', envvar='SRC', type=click.File('r'))
@@ -206,7 +198,7 @@ Example usage:
         """Print value of SRC environment variable."""
         click.echo(src.read())
 
-And from the command line:
+命令行允许的情况:
 
 .. click:run::
 
@@ -215,27 +207,24 @@ And from the command line:
             f.write('Hello World!')
         invoke(echo, env={'SRC': 'hello.txt'})
 
-In that case, it can also be a list of different environment variables
-where the first one is picked.
+在这种情况下，也可以是不同环境变量的一种列表形式，会选择列表中的第一项。
 
-Generally, this feature is not recommended because it can cause the user
-a lot of confusion.
+通用中，这个特性不建议使用，因为会导致用户不太明白。
 
-Option-Like Arguments
+类似选项的参数
 ---------------------
 
-Sometimes, you want to process arguments that look like options.  For
-instance, imagine you have a file named ``-foo.txt``.  If you pass this as
-an argument in this manner, Click will treat it as an option.
+有时候你想要处理一些看起来像选项的参数。
+对于这种情况，想象一下，你有一个文件名叫 ``-foo.txt``
+ 如果你把这个作为参数来代入的话， Click 会把它处理成一个选项。
 
-To solve this, Click does what any POSIX style command line script does,
-and that is to accept the string ``--`` as a separator for options and
-arguments.  After the ``--`` marker, all further parameters are accepted as
-arguments.
+要解决这种情况， Click 确实做了任何一种 POSIX 风格的命令行脚本所做的事情，
+然后就可以把字符串 ``--`` 接受成选项和参数的分隔符。
+在 ``--`` 符号后的所有参数都会接收成参数。
 
-Example usage:
+示例用法:
 
-.. click:example::
+.. click:类似选项的参数示例::
 
     @click.command()
     @click.argument('files', nargs=-1, type=click.Path())
@@ -244,16 +233,16 @@ Example usage:
         for filename in files:
             click.echo(filename)
 
-And from the command line:
+运行时的样子:
 
 .. click:run::
 
     invoke(touch, ['--', '-foo.txt', 'bar.txt'])
 
-If you don't like the ``--`` marker, you can set ignore_unknown_options to
-True to avoid checking unknown options:
+如果你不喜欢 ``--`` 描述符的话，你可以设置
+ ignore_unknown_options 参数为 True 来避免检查位置选项:
 
-.. click:example::
+.. click:忽略双减号描述符示例::
 
     @click.command(context_settings={"ignore_unknown_options": True})
     @click.argument('files', nargs=-1, type=click.Path())
@@ -262,7 +251,7 @@ True to avoid checking unknown options:
         for filename in files:
             click.echo(filename)
 
-And from the command line:
+运行时会是:
 
 .. click:run::
 
