@@ -1,56 +1,57 @@
 .. _options:
 
-Options
+可选项
 =======
 
 .. currentmodule:: click
 
-Adding options to commands can be accomplished by the :func:`option`
-decorator.  Since options can come in various different versions, there
-are a ton of parameters to configure their behavior. Options in click are
-distinct from :ref:`positional arguments <arguments>`.
+把可选项增加到命令中可以通过 :func:`option` 函数装饰器来实现。
+由于可选项变化太多，会有成吨的参数要配置其行为。
+在 Click 中的可选项与位置参数是完全不同的概念，
+可以阅读一下 :ref:`positional arguments <arguments>` 参考文档。
 
-Name Your Options
+命名你的可选项
 -----------------
 
-The naming rules can be found in :ref:`parameter_names`. In short, you
-can refer the option **implicitly** by the longest dash-prefixed argument:
+命名规则可以阅读 :ref:`parameter_names` 参考文档。
+长话短说，你可以把带有双减号名字的一种参数形式**隐含地**
+表达成一种可选项形式:
 
-.. click:example::
+.. click:可选项示例1::
 
     @click.command()
     @click.option('-s', '--string-to-echo')
     def echo(string_to_echo):
         click.echo(string_to_echo)
 
-Or, **explicitly**, by giving one non-dash-prefixed argument:
+或者把无减号的参数形式**隐含地**表达成一种可选项形式:
 
-.. click:example::
+.. click:可选项示例2::
 
     @click.command()
     @click.option('-s', '--string-to-echo', 'string')
     def echo(string):
         click.echo(string)
 
-Basic Value Options
+可选项基础值
 -------------------
 
-The most basic option is a value option.  These options accept one
-argument which is a value.  If no type is provided, the type of the default
-value is used.  If no default value is provided, the type is assumed to be
-:data:`STRING`.  Unless a name is explicitly specified, the name of the
-parameter is the first long option defined; otherwise the first short one is
-used. By default, options are not required, however to make an option required,
-simply pass in `required=True` as an argument to the decorator.
+最基本的可选项是一种值选择。这些可选项把一个值接收成一个参数。
+如果不提供类型的话，默认类型就是值的类型。
+如果不提供默认值的话，值类型假设成 :data:`STRING` 字符串数据类型。
+除非明确地描述一个名字，参数的名字是第一个长型可选项；
+否则就使用第一个短型可选项。默认情况下，可选项都是不需要的，
+不管如何做到的，要把一个可选项变成必须项，
+直接把 `required=True` 参数代入到装饰器中即可。
 
-.. click:example::
+.. click:可选项默认值示例::
 
     @click.command()
     @click.option('--n', default=1)
     def dots(n):
         click.echo('.' * n)
 
-.. click:example::
+.. click:必选可选项示例::
 
     # How to make an option required
     @click.command()
@@ -58,7 +59,7 @@ simply pass in `required=True` as an argument to the decorator.
     def dots(n):
         click.echo('.' * n)
 
-.. click:example::
+.. click:处理Python关键字作为可选项时的示例::
 
     # How to use a Python reserved word such as `from` as a parameter
     @click.command()
@@ -67,18 +68,17 @@ simply pass in `required=True` as an argument to the decorator.
     def reserved_param_name(from_, to):
         click.echo('from %s to %s' % (from_, to))
 
-And on the command line:
+运行时的状况:
 
 .. click:run::
 
    invoke(dots, args=['--n=2'])
 
-In this case the option is of type :data:`INT` because the default value
-is an integer.
+在这种情况下，可选项是类型 :data:`INT` 数据类型，因为默认值是一个整数。
 
-To show the default values when showing command help, use ``show_default=True``
+当显示命令帮助信息时要显示默认值，使用 ``show_default=True`` 参数。
 
-.. click:example::
+.. click:帮助页面中显示默认值信息示例::
 
     @click.command()
     @click.option('--n', default=1, show_default=True)
@@ -89,21 +89,21 @@ To show the default values when showing command help, use ``show_default=True``
 
    invoke(dots, args=['--help'])
 
-Multi Value Options
+可选项多参数值
 -------------------
 
-Sometimes, you have options that take more than one argument.  For options,
-only a fixed number of arguments is supported.  This can be configured by
-the ``nargs`` parameter.  The values are then stored as a tuple.
+有时候你有一些可选项要获得多个参数值。
+对于这些可选项来说，只提供一种固定数量的参数值支持。
+这是可以通过 ``nargs`` 参数来配置的。这些参数值都会存储成一个元组。
 
-.. click:example::
+.. click:可选项多参数值示例::
 
     @click.command()
     @click.option('--pos', nargs=2, type=float)
     def findme(pos):
         click.echo('%s / %s' % pos)
 
-And on the command line:
+运行时的状况:
 
 .. click:run::
 
@@ -111,97 +111,94 @@ And on the command line:
 
 .. _tuple-type:
 
-Tuples as Multi Value Options
+元组用作多值可选项
 -----------------------------
 
 .. versionadded:: 4.0
 
-As you can see that by using `nargs` set to a specific number each item in
-the resulting tuple is of the same type.  This might not be what you want.
-Commonly you might want to use different types for different indexes in
-the tuple.  For this you can directly specify a tuple as type:
+如你所见，通过使用 `nargs` 来设置可选项值的数量，
+其结果会是相同数据类型的元组。这也许不是你所想要的结果，
+共性的做法是，针对元组中不同的索引位指定不同的数据类型。
+对于这个目标，你可以直接在元组中描述数据类型即可:
 
-.. click:example::
+.. click:元组作为多值可选项示例::
 
     @click.command()
     @click.option('--item', type=(str, int))
     def putitem(item):
         click.echo('name=%s id=%d' % item)
 
-And on the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(putitem, args=['--item', 'peter', '1338'])
 
-By using a tuple literal as type, `nargs` gets automatically set to the
-length of the tuple and the :class:`click.Tuple` type is automatically
-used.  The above example is thus equivalent to this:
+这样使用元组时， `nargs` 参数会自动设置成元组的长度后，
+ :class:`click.Tuple` 类型也会自动被使用。
+上面的示例等价于下面的示例:
 
-.. click:example::
+.. click:元组作为多值可选项的等价示例::
 
     @click.command()
     @click.option('--item', nargs=2, type=click.Tuple([str, int]))
     def putitem(item):
-        click.echo('name=%s id=%d' % item)
+        click.echo(f'name={item[0]} id={item[-1]}')
 
-Multiple Options
+多次使用可选项
 ----------------
 
-Similarly to ``nargs``, there is also the case of wanting to support a
-parameter being provided multiple times to and have all values recorded --
-not just the last one.  For instance, ``git commit -m foo -m bar`` would
-record two lines for the commit message: ``foo`` and ``bar``. This can be
-accomplished with the ``multiple`` flag:
+类似 ``nargs`` 作用，但是一种想要给一个参数提供多次使用同一个可选项时的方法。
+并且所有的值都会记录下来，而不是只记录最后一次的值。
+例如， ``git commit -m foo -m bar`` 这样的命令会记录两行注释消息:
+ ``foo`` 和 ``bar`` 。要想这样的话，可以用 ``multiple`` 旗语来实现:
 
-Example:
+示例:
 
-.. click:example::
+.. click:多次使用可选项示例::
 
     @click.command()
     @click.option('--message', '-m', multiple=True)
     def commit(message):
         click.echo('\n'.join(message))
 
-And on the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(commit, args=['-m', 'foo', '-m', 'bar'])
 
-Counting
---------
+冗余可选项
+-------------
 
-In some very rare circumstances, it is interesting to use the repetition
-of options to count an integer up.  This can be used for verbosity flags,
-for instance:
+在非常少见的情况里，重复书写可选项名字的使用是一件有趣的事，
+因为会按照整数来数算重复名字的次数。这可以用在冗余旗语中，例如:
 
-.. click:example::
+.. click:冗余可选项示例::
 
     @click.command()
     @click.option('-v', '--verbose', count=True)
     def log(verbose):
         click.echo('Verbosity: %s' % verbose)
 
-And on the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(log, args=['-vvv'])
 
-Boolean Flags
+布尔旗语
 -------------
 
-Boolean flags are options that can be enabled or disabled.  This can be
-accomplished by defining two flags in one go separated by a slash (``/``)
-for enabling or disabling the option.  (If a slash is in an option string,
-Click automatically knows that it's a boolean flag and will pass
-``is_flag=True`` implicitly.)  Click always wants you to provide an enable
-and disable flag so that you can change the default later.
+布尔旗语都是可选项，这些可选项可以是开启或禁用功能。
+通过定义两个旗语在一行用一个斜杠  (``/``) 来分隔开来实现开启或禁用可选项。
+ (如果一个斜杠用在一个选项字符串中的话， Click 自动会知道
+这是一种布尔旗语用法，并且会隐含地代入 ``is_flag=True`` )
+ Click 一直想要你提供一种开启和禁用旗语，这样你可以稍后改变默认值。
 
-Example:
+示例:
 
-.. click:example::
+.. click:布尔旗语示例::
 
     import sys
 
@@ -213,17 +210,17 @@ Example:
             rv = rv.upper() + '!!!!111'
         click.echo(rv)
 
-And on the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(info, args=['--shout'])
     invoke(info, args=['--no-shout'])
 
-If you really don't want an off-switch, you can just define one and
-manually inform Click that something is a flag:
+如果你不想要这种切换式用法，你可以只定义一个后手动告诉
+ Click 这是一个旗语用法:
 
-.. click:example::
+.. click:无切换布尔旗语示例::
 
     import sys
 
@@ -235,17 +232,17 @@ manually inform Click that something is a flag:
             rv = rv.upper() + '!!!!111'
         click.echo(rv)
 
-And on the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(info, args=['--shout'])
 
-Note that if a slash is contained in your option already (for instance, if
-you use Windows-style parameters where ``/`` is the prefix character), you
-can alternatively split the parameters through ``;`` instead:
+注意如果在你的选项中已经含有一个斜杠的话 (例如，
+如果你使用的是 Windows 风格的参数，其中斜杠 ``/`` 
+是前缀字符的话)，你可以另外通过分号 ``;`` 来分隔参数:
 
-.. click:example::
+.. click:Windows风格的旗语示例::
 
     @click.command()
     @click.option('/debug;/no-debug')
@@ -257,12 +254,12 @@ can alternatively split the parameters through ``;`` instead:
 
 .. versionchanged:: 6.0
 
-If you want to define an alias for the second option only, then you will
-need to use leading whitespace to disambiguate the format string:
+如果你想只给第二个选项定义一个别名的话，
+你需要使用一个空格来消除格式化字符串时产生的歧义:
 
-Example:
+示例:
 
-.. click:example::
+.. click:第二个选项别名示例::
 
     import sys
 
@@ -276,20 +273,22 @@ Example:
 
 .. click:run::
 
-    invoke(info, args=['--help'])
+    invoke(info, args=['--no-shout', '-S'])
 
-Feature Switches
+特性切换
 ----------------
 
-In addition to boolean flags, there are also feature switches.  These are
-implemented by setting multiple options to the same parameter name and
-defining a flag value.  Note that by providing the ``flag_value`` parameter,
-Click will implicitly set ``is_flag=True``.
+另外对布尔旗语来说，也有特性切换功能。
+通过把两个可选项设置给同一个参数名来实现，
+然后给可选项定义一个旗语值。注意要给
+ ``flag_value`` 参数设置一个默认值，
+ Click 会隐含设置成 ``is_flag=True``
 
-To set a default flag, assign a value of `True` to the flag that should be
-the default.
+要设置这个默认值，就是使用 ``default=True`` ，
+这样当布尔旗语是 True 时代表的参数值就是旗语值，
+反之，就是另一个可选项的旗语代表值。
 
-.. click:example::
+.. click:特性切换示例::
 
     import sys
 
@@ -300,7 +299,7 @@ the default.
     def info(transformation):
         click.echo(getattr(sys.platform, transformation)())
 
-And on the command line:
+运行时的情况:
 
 .. click:run::
 
@@ -310,23 +309,23 @@ And on the command line:
 
 .. _choice-opts:
 
-Choice Options
+选择可选项值
 --------------
 
-Sometimes, you want to have a parameter be a choice of a list of values.
-In that case you can use :class:`Choice` type.  It can be instantiated
-with a list of valid values.
+有时候你想要一个参数是一种选择值列表形式。
+这种情况下你可以使用 :class:`Choice` 类，
+它可以实例化一个合法值列表。
 
-Example:
+示例:
 
-.. click:example::
+.. click:选择可选项值示例::
 
     @click.command()
     @click.option('--hash-type', type=click.Choice(['md5', 'sha1']))
     def digest(hash_type):
         click.echo(hash_type)
 
-What it looks like:
+运行时的情况:
 
 .. click:run::
 
@@ -338,94 +337,91 @@ What it looks like:
 
 .. note::
 
-    You should only pass the choices as list or tuple.  Other iterables (like
-    generators) may lead to surprising results.
+    你只可以用列表或元组作为可选项值。
+    其它的可迭代对象 (例如生成器对象) 
+    可能导致意外的结果产生。
 
 .. _option-prompting:
 
-Prompting
+提示
 ---------
 
-In some cases, you want parameters that can be provided from the command line,
-but if not provided, ask for user input instead.  This can be implemented with
-Click by defining a prompt string.
+在一些情况中，你想要参数可以在命令行提供一个提示输入信息，
+因为如果用户没有直接在命令行中提供值的话，就能实现提示用户输入。
+使用 Click 来实现就是定义一个 ``prompt`` 参数。
 
-Example:
+示例:
 
-.. click:example::
+.. click:开启提示功能示例::
 
     @click.command()
     @click.option('--name', prompt=True)
     def hello(name):
         click.echo('Hello %s!' % name)
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
     invoke(hello, args=['--name=John'])
     invoke(hello, input=['John'])
 
-If you are not happy with the default prompt string, you can ask for
-a different one:
+如果你不喜欢默认提示的字符串，你可以设置一个自己的提示信息:
 
-.. click:example::
+.. click:自定义提示信息示例::
 
     @click.command()
     @click.option('--name', prompt='Your name please')
     def hello(name):
         click.echo('Hello %s!' % name)
 
-What it looks like:
+运行时的情况:
 
 .. click:run::
 
     invoke(hello, input=['John'])
 
-Password Prompts
+密码提示
 ----------------
 
-Click also supports hidden prompts and asking for confirmation.  This is
-useful for password input:
+Click 也支持确认密码输入时的隐藏显示功能。
+对密码输入时来说这是非常有用的:
 
-.. click:example::
+.. click:密码提示隐藏示例1::
 
     @click.command()
     @click.option('--password', prompt=True, hide_input=True,
                   confirmation_prompt=True)
     def encrypt(password):
-        click.echo('Encrypting password to %s' % password.encode('rot13'))
+        click.echo('Encrypting password to %s' % password.encode('utf16'))
 
-What it looks like:
+运行时的情况:
 
 .. click:run::
 
     invoke(encrypt, input=['secret', 'secret'])
 
-Because this combination of parameters is quite common, this can also be
-replaced with the :func:`password_option` decorator:
+由于这种参数组合非常有共性，所以可以用
+ :func:`password_option` 函数装饰器来代替:
 
-.. click:example::
+.. click:密码提示隐藏示例2::
 
     @click.command()
-    @click.password_option()
+    @click.password_option("--password")
     def encrypt(password):
-        click.echo('Encrypting password to %s' % password.encode('rot13'))
+        click.echo('Encrypting password to %s' % password.encode('utf32'))
 
-Dynamic Defaults for Prompts
+针对提示的动态默认值
 ----------------------------
 
-The ``auto_envvar_prefix`` and ``default_map`` options for the context
-allow the program to read option values from the environment or a
-configuration file.  However, this overrides the prompting mechanism, so
-that the user does not get the option to change the value interactively.
+对于语境来说 ``auto_envvar_prefix`` 和 ``default_map`` 可选项
+是允许程序从环境变量或一个配置文件读取可选项值的。不管如何做到的，
+这种覆写提示值的机制，不会在互动时让用户得到可选项来改变可选项值。
 
-If you want to let the user configure the default value, but still be
-prompted if the option isn't specified on the command line, you can do so
-by supplying a callable as the default value. For example, to get a default
-from the environment:
+如果你想要让用户配置默认值值的话，如果在命令行中没有描述可选项仍然作出提示，
+你可以提供一个可调用对象作为默认值来实现。例如，要从环境变量中得到一个默认值:
 
-.. click:example::
+.. click:提示动态默认值示例::
 
     @click.command()
     @click.option('--username', prompt=True,
@@ -433,7 +429,7 @@ from the environment:
     def hello(username):
         print("Hello,", username)
 
-To describe what the default value will be, set it in ``show_default``.
+要想在帮助页面中描述默认值是什么，在 ``show_default`` 参数中设置。
 
 .. click:example::
 
@@ -448,34 +444,33 @@ To describe what the default value will be, set it in ``show_default``.
 
    invoke(hello, args=['--help'])
 
-Callbacks and Eager Options
+回调与期望可选项
 ---------------------------
 
-Sometimes, you want a parameter to completely change the execution flow.
-For instance, this is the case when you want to have a ``--version``
-parameter that prints out the version and then exits the application.
+有时候，你想要一个参数完全改变执行流程。
+例如，当你有一个输出版本信息的 ``--version``
+ 参数，输出完信息后退出应用程序。
 
-Note: an actual implementation of a ``--version`` parameter that is
-reusable is available in Click as :func:`click.version_option`.  The code
-here is merely an example of how to implement such a flag.
+注意: 实际上一个 ``--version`` 参数的部署是一种复用情况，
+在 Click 中可以用 :func:`click.version_option` 函数装饰器来实现。
+这里介绍的示例代码是解释如何实现这种旗语。
 
-In such cases, you need two concepts: eager parameters and a callback.  An
-eager parameter is a parameter that is handled before others, and a
-callback is what executes after the parameter is handled.  The eagerness
-is necessary so that an earlier required parameter does not produce an
-error message.  For instance, if ``--version`` was not eager and a
-parameter ``--foo`` was required and defined before, you would need to
-specify it for ``--version`` to work.  For more information, see
-:ref:`callback-evaluation-order`.
+在这种情况中，你需要明白 2 个概念: 期望可选项和回调。
+一个期望可选项是一种参数形式，该参数要在其它参数之前进行处理。
+而一个回调是要在期望参数处理完后执行。期望的需要意味着前面所需
+的参数不会产生一项错误消息。例如，如果 ``--version`` 不属于
+期望可选项的话，而所需的参数 ``--foo`` 定义在它之前的话，
+你就需要为 ``--version`` 来描述它才能生效。对于更多这方面的信息
+阅读 :ref:`callback-evaluation-order` 参考文档。
 
-A callback is a function that is invoked with two parameters: the current
-:class:`Context` and the value.  The context provides some useful features
-such as quitting the application and gives access to other already
-processed parameters.
+一个回调就是一个函数，这个函数带着 2 个参数被触发:
+当前语境参数 :class:`Context` 类和值。语境参数
+提供一些有用的特性，例如退出程序和给予访问其它已经
+处理完的参数。
 
-Here an example for a ``--version`` flag:
+对于一个 ``--version`` 旗语的示例如下:
 
-.. click:example::
+.. click:回调和期望可选项示例::
 
     def print_version(ctx, param, value):
         if not value or ctx.resilient_parsing:
@@ -489,34 +484,34 @@ Here an example for a ``--version`` flag:
     def hello():
         click.echo('Hello World!')
 
-The `expose_value` parameter prevents the pretty pointless ``version``
-parameter from being passed to the callback.  If that was not specified, a
-boolean would be passed to the `hello` script.  The `resilient_parsing`
-flag is applied to the context if Click wants to parse the command line
-without any destructive behavior that would change the execution flow.  In
-this case, because we would exit the program, we instead do nothing.
+其中 `expose_value` 参数防止没有意义的 ``version`` 参数
+被带入到回调函数中。如果不描述曝光值参数的话，或者值为 True时，
+都会导致把一个布尔值代入到 `hello` 脚本函数里。
+如果 Click 想要对命令行进行语法分析不带任何一种破坏行为的话，
+破坏行为就是一种结构表现，它会改变执行流程，那么回调函数中的
+ `resilient_parsing` 旗语就被作用到语境上了。在这里的情况，
+由于我们退出了程序，并没有做什么其它事情。
 
-What it looks like:
+运行起来的情况是:
 
 .. click:run::
 
     invoke(hello)
     invoke(hello, args=['--version'])
 
-.. admonition:: Callback Signature Changes
+.. admonition:: 回调信号变更
 
-    In Click 2.0 the signature for callbacks changed.  For more
-    information about these changes see :ref:`upgrade-to-2.0`.
+    在 Click 2.0 版本中，回调信号有了变化。对于更多这方面的信息
+    阅读 :ref:`upgrade-to-2.0` 参考文档。
 
-Yes Parameters
+确认参数形式
 --------------
 
-For dangerous operations, it's very useful to be able to ask a user for
-confirmation.  This can be done by adding a boolean ``--yes`` flag and
-asking for confirmation if the user did not provide it and to fail in a
-callback:
+对于那些有风险的操作来说，询问一名用户来确认一下是非常有用的一件事。
+这可以通过增加一个布尔 ``--yes`` 旗语来实现，并且如果用户没有提供
+确认输入的话，就会让一个回调函数执行失败，从而确保避免风险操作:
 
-.. click:example::
+.. click:确认参数形式示例1::
 
     def abort_if_false(ctx, param, value):
         if not value:
@@ -529,49 +524,48 @@ callback:
     def dropdb():
         click.echo('Dropped all tables!')
 
-And what it looks like on the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(dropdb, input=['n'])
     invoke(dropdb, args=['--yes'])
 
-Because this combination of parameters is quite common, this can also be
-replaced with the :func:`confirmation_option` decorator:
+由于这种组合参数形式非常具有共性，
+也可以用 :func:`confirmation_option` 函数装饰器来实现:
 
-.. click:example::
+.. click:确认参数形式示例2::
 
     @click.command()
     @click.confirmation_option(prompt='Are you sure you want to drop the db?')
     def dropdb():
         click.echo('Dropped all tables!')
 
-.. admonition:: Callback Signature Changes
+.. admonition:: 回调信号变更
 
-    In Click 2.0 the signature for callbacks changed.  For more
-    information about these changes see :ref:`upgrade-to-2.0`.
+    在 Click 2.0 版本中，回调信号有了变化。对于更多这方面的信息
+    阅读 :ref:`upgrade-to-2.0` 参考文档。
 
-Values from Environment Variables
+来自环境变量的值
 ---------------------------------
 
-A very useful feature of Click is the ability to accept parameters from
-environment variables in addition to regular parameters.  This allows
-tools to be automated much easier.  For instance, you might want to pass
-a configuration file with a ``--config`` parameter but also support exporting
-a ``TOOL_CONFIG=hello.cfg`` key-value pair for a nicer development
-experience.
+在 Click 中一个非常有用的特性就是能够接受来自环境变量的参数值作为常规参数值。
+这样允许许多命令行工具更容易实现自动化。例如，你也许想要用一个 ``--config`` 
+ 可选项来代入一个配置文件，但也能够支持为更好的开发体验支持导出一个
+ ``TOOL_CONFIG=hello.cfg`` 键值对儿。
 
-This is supported by Click in two ways.  One is to automatically build
-environment variables which is supported for options only.  To enable this
-feature, the ``auto_envvar_prefix`` parameter needs to be passed to the
-script that is invoked.  Each command and parameter is then added as an
-uppercase underscore-separated variable.  If you have a subcommand
-called ``foo`` taking an option called ``bar`` and the prefix is
-``MY_TOOL``, then the variable is ``MY_TOOL_FOO_BAR``.
+那么 Click 有 2 种方法来支持这种实现。
+一个是自动化建立环境变量只为可选项来获得支持。
+要开启这种特性， ``auto_envvar_prefix`` 
+参数需要代入到被触发的脚本中。每个命令和参数
+都是稍后加入成一种全大写用下划线分隔的变量。
+如果你有一个名叫 ``foo`` 的子命令得到了一个
+名叫 ``bar`` 的可选项，那么前缀就是 ``MY_TOOL`` 了，
+那么变量名就是 ``MY_TOOL_FOO_BAR`` 形式。
 
-Example usage:
+示例用法:
 
-.. click:example::
+.. click:环境变量值示例::
 
     @click.command()
     @click.option('--username')
@@ -581,19 +575,20 @@ Example usage:
     if __name__ == '__main__':
         greet(auto_envvar_prefix='GREETER')
 
-And from the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(greet, env={'GREETER_USERNAME': 'john'},
            auto_envvar_prefix='GREETER')
 
-When using ``auto_envvar_prefix`` with command groups, the command name needs
-to be included in the environment variable, between the prefix and the parameter name, *i.e.* *PREFIX_COMMAND_VARIABLE*.
+当 ``auto_envvar_prefix`` 与群组命令一起使用的时候，
+命令名需要包含在环境变量中，在前缀和参数名之间，
+ *例如：* *PREFIX_COMMAND_VARIABLE*
 
-Example:
+示例:
 
-.. click:example::
+.. click:群组命令环境变量值示例::
 
    @click.group()
    @click.option('--debug/--no-debug')
@@ -615,12 +610,11 @@ Example:
           auto_envvar_prefix='GREETER')
 
 
-The second option is to manually pull values in from specific environment
-variables by defining the name of the environment variable on the option.
+第二个可选项是手动获得描述的环境变量值，环境变量的名字是定义在可选项上的。
 
-Example usage:
+示例用法:
 
-.. click:example::
+.. click:手动描述环境变量名给可选项示例::
 
     @click.command()
     @click.option('--username', envvar='USERNAME')
@@ -630,37 +624,38 @@ Example usage:
     if __name__ == '__main__':
         greet()
 
-And from the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(greet, env={'USERNAME': 'john'})
 
-In that case it can also be a list of different environment variables
-where the first one is picked.
+在这种情况下也可以用不同的环境变量列表，但第一个会被选用。
 
-Multiple Values from Environment Values
+多值环境变量
 ---------------------------------------
 
-As options can accept multiple values, pulling in such values from
-environment variables (which are strings) is a bit more complex.  The way
-Click solves this is by leaving it up to the type to customize this
-behavior.  For both ``multiple`` and ``nargs`` with values other than
-``1``, Click will invoke the :meth:`ParamType.split_envvar_value` method to
-perform the splitting.
+由于许多可选项能接收多个值，
+那么获得多值环境变量的时候 (都是字符串类型) 
+需要一点多层化处理。那么 Click 解决这个问题
+的方法是通过留给类型来自定义这种行为。
+对于 ``multiple`` 和 ``nargs`` 参数带着的
+许多值都会大于 ``1`` ，那么 Click 会触发
+ :meth:`ParamType.split_envvar_value` 方法
+来执行分解这些值。
 
-The default implementation for all types is to split on whitespace.  The
-exceptions to this rule are the :class:`File` and :class:`Path` types
-which both split according to the operating system's path splitting rules.
-On Unix systems like Linux and OS X, the splitting happens for those on
-every colon (``:``), and for Windows, on every semicolon (``;``).
+默认都是用空格来分解所有类型。对于这种规则的例外情况
+都是 :class:`File` 类和 :class:`Path` 类所代表
+的类型，这些类型都要根据操作系统的路径分解规则来进行分解。
+在 Unix 类型的系统上，像 Linux 和 OS X 系统，分解都是
+使用冒号 (``:``) 的，而对于 Windows 系统则是使用分号 (``;``)
 
-Example usage:
+示例用法:
 
-.. click:example::
+.. click:多值环境变量示例::
 
     @click.command()
-    @click.option('paths', '--path', envvar='PATHS', multiple=True,
+    @click.option('paths', '--path', envvar='PATH', multiple=True,
                   type=click.Path())
     def perform(paths):
         for path in paths:
@@ -669,23 +664,23 @@ Example usage:
     if __name__ == '__main__':
         perform()
 
-And from the command line:
+运行时的情况:
 
 .. click:run::
 
     import os
     invoke(perform, env={'PATHS': './foo/bar%s./test' % os.path.pathsep})
 
-Other Prefix Characters
+其它前缀字符
 -----------------------
 
-Click can deal with alternative prefix characters other than ``-`` for
-options.  This is for instance useful if you want to handle slashes as
-parameters ``/`` or something similar.  Note that this is strongly
-discouraged in general because Click wants developers to stay close to
-POSIX semantics.  However in certain situations this can be useful:
+Click 能处理另外一种前缀字符，不止可选项所用的 ``-`` 前缀。
+如果你想要处理斜杠 ``/`` 作为参数或类似情况这个功能就有用了。
+注意在通用中是非常不鼓励这个功能，因为 Click 想要开发者们与
+ POSIX 系统语义保持紧密联系。不管如何做到的，在某些情况下本
+功能是有用的:
 
-.. click:example::
+.. click:其它前缀字符示例1::
 
     @click.command()
     @click.option('+w/-w')
@@ -695,17 +690,18 @@ POSIX semantics.  However in certain situations this can be useful:
     if __name__ == '__main__':
         chmod()
 
-And from the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(chmod, args=['+w'])
     invoke(chmod, args=['-w'])
 
-Note that if you are using ``/`` as prefix character and you want to use a
-boolean flag you need to separate it with ``;`` instead of ``/``:
+注意，如果你正在使用斜杠 ``/`` 作为前缀字符的话，
+你想要使用布尔旗语的话，你需要用分号 ``;`` 来分隔，
+而不是再使用斜杠 ``/`` 了，这是为了避免歧义:
 
-.. click:example::
+.. click:其它前缀字符示例2::
 
     @click.command()
     @click.option('/debug;/no-debug')
@@ -717,23 +713,21 @@ boolean flag you need to separate it with ``;`` instead of ``/``:
 
 .. _ranges:
 
-Range Options
+范围可选项
 -------------
 
-A special mention should go to the :class:`IntRange` type, which works very
-similarly to the :data:`INT` type, but restricts the value to fall into a
-specific range (inclusive on both edges).  It has two modes:
+特别要提一下 :class:`IntRange` 类，它工作起来特别像
+ :data:`INT` 数据类型，但限制了值在一个具体范围里
+ (起始端都包含的范围) 。并且有 2 种模式都能确保不会导致范围蔓延:
 
--   the default mode (non-clamping mode) where a value that falls outside
-    of the range will cause an error.
--   an optional clamping mode where a value that falls outside of the
-    range will be clamped.  This means that a range of ``0-5`` would
-    return ``5`` for the value ``10`` or ``0`` for the value ``-1`` (for
-    example).
+-   默认模式 (非固定模式) 就是一个值超出了范围时会产生一项错误。
+-   一种可选固定模式，就是一个值超出了范围会固定到所限范围里。
+    意思就是例如一个范围值是 ``0-5`` 的话，那么值是 ``10`` 的时候
+    会把值返回成 ``5`` ，而值是 ``-1`` 的时候返回成 ``0`` 值。
 
-Example:
+示例:
 
-.. click:example::
+.. click:范围可选项示例::
 
     @click.command()
     @click.option('--count', type=click.IntRange(0, 20, clamp=True))
@@ -744,40 +738,46 @@ Example:
     if __name__ == '__main__':
         repeat()
 
-And from the command line:
+运行时的情况:
 
 .. click:run::
 
     invoke(repeat, args=['--count=1000', '--digit=5'])
     invoke(repeat, args=['--count=1000', '--digit=12'])
 
-If you pass ``None`` for any of the edges, it means that the range is open
-at that side.
+如果给任何一个范围边缘值代入成 ``None`` 的话，
+那就意味着范围的一边被打开不再受限了。
 
-Callbacks for Validation
+针对验证回调
 ------------------------
 
 .. versionchanged:: 2.0
 
-If you want to apply custom validation logic, you can do this in the
-parameter callbacks.  These callbacks can both modify values as well as
-raise errors if the validation does not work.
+如果你想要应用自定义验证逻辑的话，
+你可以在参数形式的回调中实现这个目的。
+这些回调函数既可以修改值，也可以在验证无效时抛出错误。
 
-In Click 1.0, you can only raise the :exc:`UsageError` but starting with
-Click 2.0, you can also raise the :exc:`BadParameter` error, which has the
-added advantage that it will automatically format the error message to
-also contain the parameter name.
+在 Click 1.0 版本中, 你只可以抛出 :exc:`UsageError` 例外，
+但从 Click 2.0 开始，你也可以抛出 :exc:`BadParameter` 例外。
+败坏的参数形式例外错误增加了一种优势，那就是它会自动地格式化错误消息
+时也包含了参数形式的名字。
 
-Example:
+示例:
 
-.. click:example::
+.. click:针对验证回调示例::
 
     def validate_rolls(ctx, param, value):
         try:
             rolls, dice = map(int, value.split('d', 2))
+            if dice <= 0:
+                raise AttributeError("min-sided dice is 1")
+            if dice > 6:
+                raise AttributeError("max-sided dice is 6")
             return (dice, rolls)
         except ValueError:
             raise click.BadParameter('rolls need to be in format NdM')
+        except AttributeError:
+            raise click.UsageError(f"There is no {dice}-sided on dice.")
 
     @click.command()
     @click.option('--rolls', callback=validate_rolls, default='1d6')
@@ -787,7 +787,7 @@ Example:
     if __name__ == '__main__':
         roll()
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
