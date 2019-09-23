@@ -1,25 +1,20 @@
 .. _contrib:
 
 =============
-click-contrib
+click贡献机制
 =============
 
-As the userbase of Click grows, more and more major feature requests pop up in
-Click's bugtracker. As reasonable as it may be for those features to be bundled
-with Click instead of being a standalone project, many of those requested
-features are either highly experimental or have unproven practical use, while
-potentially being a burden to maintain.
+由于 Click 用户的增长，越来越多主要特性的请求从 Click bug追踪器里跳了出来。
+也许是把那些特性与 Click 绑定在一起的理由，而不再作为单独的项目进行开发，
+其中请求的许多特性都具有高度实验性，或无法证明简单实用，同时也潜在让维护变得沉重。
 
-This is why click-contrib_ exists. The GitHub organization is a collection of
-possibly experimental third-party packages whose featureset does not belong
-into Click, but also a playground for major features that may be added to Click
-in the future. It is also meant to coordinate and concentrate effort on writing
-third-party extensions for Click, and to ease the effort of searching for such
-extensions. In that sense it could be described as a low-maintenance
-alternative to extension repositories of other frameworks.
+这也就是为什么要有 click-contrib_ 的存在。在 GitHub 组织上是一种实验性第三方包
+收集机制，收集的特性集不属于 Click 工具集，但作为这种游乐场来说，许多主要特性也许
+会加入到 Click 库中。这也就意味着需要协同集中为 Click 来写第三方扩展包而做出努力，
+并且搜索这样的扩展包也会容易些。这么说来，对于其它框架的扩展仓库来说就不会投入那么
+多维护时间与人力了。
 
-Please note that the quality and stability of those packages may be different
-than what you expect from Click itself. While published under a common
-organization, they are still projects separate from Click.
+请注意，那些扩展包的质量与稳定性都不是一样的，因为与 Click 库自身来说是完全不同的。
+虽然扩展包都发不在同一个组织下，但发布者们依然是与 Click 项目相分离的。
 
 .. _click-contrib: https://github.com/click-contrib/
