@@ -1,22 +1,21 @@
-Documenting Scripts
+文档化脚本
 ===================
 
 .. currentmodule:: click
 
-Click makes it very easy to document your command line tools.  First of
-all, it automatically generates help pages for you.  While these are
-currently not customizable in terms of their layout, all of the text
-can be changed.
+Click 让文档化你的命令行工具变得非常容易。
+首先，它自动生成帮助页面给你。同时目前没有
+自定义图层功能，所有的文字内容都会被改变。
 
-Help Texts
+帮助内容
 ----------
 
-Commands and options accept help arguments.  In the case of commands, the
-docstring of the function is automatically used if provided.
+命令和可选项都接收帮助参数。在命令中使用时，
+函数的文档字符串会自动用作帮助内容。
 
-Simple example:
+简单的示例:
 
-.. click:example::
+.. click:函数文档字符串作为帮助内容的示例::
 
     @click.command()
     @click.option('--count', default=1, help='number of greetings')
@@ -26,7 +25,7 @@ Simple example:
         for x in range(count):
             click.echo('Hello %s!' % name)
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
@@ -35,17 +34,16 @@ And what it looks like:
 
 .. _documenting-arguments:
 
-Documenting Arguments
+文档化参数
 ~~~~~~~~~~~~~~~~~~~~~
 
-:func:`click.argument` does not take a ``help`` parameter. This is to
-follow the general convention of Unix tools of using arguments for only
-the most necessary things, and to document them in the command help text
-by referring to them by name.
+在使用 :func:`click.argument` 的时候不会得到一个 ``help`` 参数。
+这是遵循 Unix 工具的通用惯例，因为使用参数只是为了必不缺少的事物，
+并且在命令行帮助内容里对参数文档化都是通过名字来识别，也就是顾名思义。
 
-You might prefer to reference the argument in the description:
+你可以在函数文档字符串中来描述参数的参考信息:
 
-.. click:example::
+.. click:文档化参数在函数文档字符串中实现的示例1::
 
     @click.command()
     @click.argument('filename')
@@ -53,15 +51,15 @@ You might prefer to reference the argument in the description:
         """Print FILENAME."""
         click.echo(filename)
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
     invoke(touch, args=['--help'])
 
-Or you might prefer to explicitly provide a description of the argument:
+或者你可以在函数文档字符串中对参数描述的明确些:
 
-.. click:example::
+.. click:文档化参数在函数文档字符串中实现的示例2::
 
     @click.command()
     @click.argument('filename')
@@ -72,29 +70,29 @@ Or you might prefer to explicitly provide a description of the argument:
         """
         click.echo(filename)
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
     invoke(touch, args=['--help'])
 
-For more examples, see the examples in :doc:`/arguments`.
+对于更多示例，阅读 :doc:`/arguments` 文档内容来了解。
 
 
-Preventing Rewrapping
+防止二次打包
 ---------------------
 
-The default behavior of Click is to rewrap text based on the width of the
-terminal.  In some circumstances, this can become a problem. The main issue
-is when showing code examples, where newlines are significant.
+Click 二次打包文档内容的默认行为是根据终端的宽来决定。
+在一些情况中，这会有一个问题。主要问题是当显示代码示例时，
+使用换行符是有意义的事情。
 
-Rewrapping can be disabled on a per-paragraph basis by adding a line with
-solely the ``\b`` escape marker in it.  This line will be removed from the
-help text and rewrapping will be disabled.
+二次打包可以被禁用在每个段落上，通过使用 ``\b`` 转义字符
+加入到单独一行上来实现。那么段落与段落就不会打包在一起了，
+就实现了分段落显示帮助内容了，这就是禁用二次打包的效果。
 
-Example:
+示例:
 
-.. click:example::
+.. click:防止二次打包示例::
 
     @click.command()
     def cli():
@@ -114,7 +112,7 @@ Example:
         that will be rewrapped again.
         """
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
@@ -122,19 +120,20 @@ And what it looks like:
 
 .. _doc-meta-variables:
 
-Truncating Help Texts
+隐藏帮助内容
 ---------------------
 
-Click gets command help text from function docstrings.  However if you
-already use docstrings to document function arguments you may not want
-to see :param: and :return: lines in your help text.
+Click 从函数文档字符串中获得命令的帮助内容。
+不管如何做到的，如果你已经使用文档字符串来对
+函数的参数做文档化工作，那么你要不想在帮助内容
+中看到 :param: 和 :return: 这些内容的话，
 
-You can use the ``\f`` escape marker to have Click truncate the help text
-after the marker.
+你可以使用 ``\f`` 转移字符，该转义字符以后的
+内容都会被 Click 隐藏起来，不再显示在帮助内容中。
 
-Example:
+示例:
 
-.. click:example::
+.. click:隐藏帮助内容示例1::
 
     @click.command()
     @click.pass_context
@@ -149,22 +148,46 @@ Example:
         :param click.core.Context ctx: Click context.
         """
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
     invoke(cli, args=['--help'])
 
+注意一点，在只使用 ``\f``转义字符时，可能会出现二次打包的显示混乱问题，
+要解决这个问题可以通过结合 ``\b`` 转义字符来修复。
 
-Meta Variables
+.. click:隐藏帮助内容示例2::
+
+    @click.command()
+    @click.pass_context
+    def cli(ctx):
+        """First paragraph.
+
+        \b
+        This is a very long second
+        paragraph and not correctly
+        wrapped but it will be rewrapped.
+        \f
+
+        :param click.core.Context ctx: Click context.
+        """
+
+运行时的情况:
+
+.. click:run::
+
+    invoke(cli, args=['--help'])
+
+元变量
 --------------
 
-Options and parameters accept a ``metavar`` argument that can change the
-meta variable in the help page.  The default version is the parameter name
-in uppercase with underscores, but can be annotated differently if
-desired.  This can be customized at all levels:
+可选项和参数形式都接受一个 ``metavar`` 参数，它可以改变
+帮助页面中的元变量显示效果。默认版本是参数形式名带有下划线的
+全大写形式，但也可以注释成不同形式。这个特性可以在所有层面上
+实现自定义:
 
-.. click:example::
+.. click:元变量示例::
 
     @click.command(options_metavar='<options>')
     @click.option('--count', default=1, help='number of greetings',
@@ -175,21 +198,21 @@ desired.  This can be customized at all levels:
         for x in range(count):
             click.echo('Hello %s!' % name)
 
-Example:
+运行时的情况:
 
 .. click:run::
 
     invoke(hello, args=['--help'])
 
 
-Command Short Help
+命令的简短帮助内容
 ------------------
 
-For commands, a short help snippet is generated.  By default, it's the first
-sentence of the help message of the command, unless it's too long.  This can
-also be overridden:
+对于命令或子命令来说，生成一个简短帮助内容有时是有帮助的。
+默认情况是把命令的文档字符串内容作为帮助信息的内容，
+那么也可以用短帮助参数来覆写要的显示帮助内容:
 
-.. click:example::
+.. click:命令短帮助示例::
 
     @click.group()
     def cli():
@@ -203,30 +226,31 @@ also be overridden:
     def delete():
         """Deletes the repository."""
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
     invoke(cli, prog_name='repo.py')
 
 
-Help Parameter Customization
+自定义帮助参数形式
 ----------------------------
 
 .. versionadded:: 2.0
 
-The help parameter is implemented in Click in a very special manner.
-Unlike regular parameters it's automatically added by Click for any
-command and it performs automatic conflict resolution.  By default it's
-called ``--help``, but this can be changed.  If a command itself implements
-a parameter with the same name, the default help parameter stops accepting
-it.  There is a context setting that can be used to override the names of
-the help parameters called :attr:`~Context.help_option_names`.
+在 Click 中实现的帮助参数是一种非常特殊的方式。
+不像其它的参数形式，帮助参数形式由 Click 自动
+增加给任何一个命令，并且执行自动冲突解决方案。
+默认情况下，帮助参数形式叫做 ``--help`` ，但
+这也是可以改变的。如果一个命令自身实现了一个同名
+参数形式的话，默认的帮助参数形式会拒绝接收。
+这里有一个语境设置，可以用来覆写帮助参数形式的名字，
+叫做 :attr:`~Context.help_option_names` 属性。
 
-This example changes the default parameters to ``-h`` and ``--help``
-instead of just ``--help``:
+这里的示例把默认帮助参数形式变成了 ``-h`` 和 ``--help``
+ 两种形式，而不再只是 ``--help`` 一种形式了:
 
-.. click:example::
+.. click:自定义帮助参数形式示例::
 
     CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -234,8 +258,10 @@ instead of just ``--help``:
     def cli():
         pass
 
-And what it looks like:
+运行时的情况:
 
 .. click:run::
 
     invoke(cli, ['-h'])
+
+这里要注意一点，在命令中设置这个自定义帮助参数形式时，要写在第一个参数位置上才有效。
