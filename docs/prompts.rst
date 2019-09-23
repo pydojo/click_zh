@@ -1,48 +1,44 @@
-User Input Prompts
+用户输入提示
 ==================
 
 .. currentmodule:: click
 
-Click supports prompts in two different places.  The first is automated
-prompts when the parameter handling happens, and the second is to ask for
-prompts at a later point independently.
+Click 支持两种位置上的提示。第一种是自动提示在参数形式处理发生的地方，
+第二种就是稍后单独做出提示的地方。
 
-This can be accomplished with the :func:`prompt` function, which asks for
-valid input according to a type, or the :func:`confirm` function, which asks
-for confirmation (yes/no).
+这可以用 :func:`prompt` 函数来实现，它会验证输入的类型，
+或根据 :func:`confirm` 函数来验证输入，确认函数是以 (yes/no) 做验证。
 
-Option Prompts
+可选项提示
 --------------
 
-Option prompts are integrated into the option interface.  See
-:ref:`option-prompting` for more information.  Internally, it
-automatically calls either :func:`prompt` or :func:`confirm` as necessary.
+可选项使用提示都是集成在可选项接口里的。阅读
+ :ref:`option-prompting` 参考文档了解更多信息。内部来说，它会自动
+根据需要调用 :func:`prompt` 提示函数，或 :func:`confirm` 确认函数。
 
-Input Prompts
+输入提示
 -------------
 
-To manually ask for user input, you can use the :func:`prompt` function.
-By default, it accepts any Unicode string, but you can ask for any other
-type.  For instance, you can ask for a valid integer::
+要手动提供用户输入提示，可以使用 :func:`prompt` 提示函数。
+默认情况下，它接收任何一个 Unicode 字符串，但你可以要求其它数据类型。
+例如，你可以要求输入是一个合法整数::
 
     value = click.prompt('Please enter a valid integer', type=int)
 
-Additionally, the type will be determined automatically if a default value is
-provided.  For instance, the following will only accept floats::
+另外，如果提供一个默认值的话，数据类型的确定是自动检测的。
+例如，只接受浮点数::
 
     value = click.prompt('Please enter a number', default=42.0)
 
-Confirmation Prompts
+确认提示
 --------------------
 
-To ask if a user wants to continue with an action, the :func:`confirm`
-function comes in handy.  By default, it returns the result of the prompt
-as a boolean value::
+要询问用户是否想要继续一项动作的话， :func:`confirm` 确认函数少不了。
+默认情况下，它把提示的结果返回成一个布尔值::
 
     if click.confirm('Do you want to continue?'):
         click.echo('Well done!')
 
-There is also the option to make the function automatically abort the
-execution of the program if it does not return ``True``::
+也有让确认函数自动终止程序的执行选择，那就是确认函数不返回 ``True`` 值::
 
     click.confirm('Do you want to continue?', abort=True)
