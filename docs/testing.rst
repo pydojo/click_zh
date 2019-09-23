@@ -1,26 +1,23 @@
-Testing Click Applications
+测试 Click 应用程序
 ==========================
 
 .. currentmodule:: click.testing
 
-For basic testing, Click provides the :mod:`click.testing` module which
-provides test functionality that helps you invoke command line
-applications and check their behavior.
+对于基础测试来说， Click 提供了 :mod:`click.testing` 模块，
+该模块提供了测试功能，帮助你触发命令行应用程序和检查程序行为。
 
-These tools should really only be used for testing as they change
-the entire interpreter state for simplicity and are not in any way
-thread-safe!
+这些测试工具真的应该只用在测试中，因为它们会简单地改变整个解释器状态，
+并且处于一种没有任何线程安全环境中！
 
-Basic Testing
+基础测试
 -------------
 
-The basic functionality for testing Click applications is the
-:class:`CliRunner` which can invoke commands as command line scripts.  The
-:meth:`CliRunner.invoke` method runs the command line script in isolation
-and captures the output as both bytes and binary data.
+对于测试 Click 应用程序的基础功能是 :class:`CliRunner` 类负责，
+它可以把许多命令触发成命令行脚本。其中 :meth:`CliRunner.invoke` 
+方法在隔离环境中运行命令行脚本后把输出捕获成字节和二进制数据。
 
-The return value is a :class:`Result` object, which has the captured output
-data, exit code, and optional exception attached:
+返回值是一个 :class:`Result` 类实例对象，它含有捕获的的输出数据、
+退出代号、跟随的可选例外类型:
 
 .. code-block:: python
    :caption: hello.py
@@ -44,7 +41,8 @@ data, exit code, and optional exception attached:
      assert result.exit_code == 0
      assert result.output == 'Hello Peter!\n'
 
-For subcommand testing, a subcommand name must be specified in the `args` parameter of :meth:`CliRunner.invoke` method:
+对于子命令测试来说，一个子命令名必须描述在 :meth:`CliRunner.invoke` 方法的
+ `args` 参数值中:
 
 .. code-block:: python
    :caption: sync.py
@@ -73,8 +71,8 @@ For subcommand testing, a subcommand name must be specified in the `args` parame
      assert 'Debug mode is on' in result.output
      assert 'Syncing' in result.output
 
-Additional keyword arguments passed to ``.invoke()`` will be used to construct the initial Context object.
-For example, if you want to run your tests against a fixed terminal width you can use the following::
+另外一个关键字参数代入到 ``.invoke()`` 方法中会用来建立初始化语境对象。
+例如，如果你想要运行一个固定终端宽度的测试，你可以使用下面关键字参数::
 
     runner = CliRunner()
     result = runner.invoke(cli, ['--debug', 'sync'], terminal_width=60)
@@ -82,9 +80,9 @@ For example, if you want to run your tests against a fixed terminal width you ca
 File System Isolation
 ---------------------
 
-For basic command line tools that want to operate with the file system, the
-:meth:`CliRunner.isolated_filesystem` method comes in useful which sets up
-an empty folder and changes the current working directory to:
+对于基础的命令行工具来说，都是要与文件系统进行操作的，
+ :meth:`CliRunner.isolated_filesystem` 方法的
+用处就是配置一个空文件夹后，把当前工作目录改成这个空目录:
 
 .. code-block:: python
    :caption: cat.py
@@ -112,11 +110,11 @@ an empty folder and changes the current working directory to:
          assert result.exit_code == 0
          assert result.output == 'Hello World!\n'
 
-Input Streams
+输入流数据
 -------------
 
-The test wrapper can also be used to provide input data for the input
-stream (stdin).  This is very useful for testing prompts, for instance:
+测试打包器也可以用来为输入流数据（标准输入）提供输入数据。
+对于测试用户提示来说是非常有用的，例如:
 
 .. code-block:: python
    :caption: prompt.py
@@ -140,6 +138,5 @@ stream (stdin).  This is very useful for testing prompts, for instance:
       assert not result.exception
       assert result.output == 'Foo: wau wau\nfoo=wau wau\n'
 
-Note that prompts will be emulated so that they write the input data to
-the output stream as well.  If hidden input is expected then this
-obviously does not happen.
+注意那个提示部分都要进行模拟，这样才把输入数据写到输出流数据中。
+如果隐藏了输入内容的话，那么显然就不会出现输出流数据了。
