@@ -1,13 +1,12 @@
-License
+协议
 =======
 
-Click is licensed under a three-clause BSD License.  It basically means:
-do whatever you want with it as long as the copyright in Click sticks
-around, the conditions are not modified and the disclaimer is present.
-Furthermore, you must not use the names of the authors to promote derivatives
-of the software without written consent.
+Click 的协议是建立在 BSD 协议中一种三条款协议之下。基础法律意义是:
+使用 Click 做你想做的，只要版权采用 Click 品牌即可，
+条件都不能修改，并且必须描述免责声明。
+进一步来说，你不能未得到作者亲自授权情况下，使用作者的名字来做衍生产品的促销。
 
-License Text
+协议内容
 ------------
 
 .. include:: ../LICENSE.rst
