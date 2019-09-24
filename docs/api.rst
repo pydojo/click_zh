@@ -3,10 +3,9 @@ API
 
 .. module:: click
 
-This part of the documentation lists the full API reference of all public
-classes and functions.
+本篇文档列出了全部公开类与函数的完整 API 文档内容。
 
-Decorators
+装饰器
 ----------
 
 .. autofunction:: command
@@ -31,7 +30,7 @@ Decorators
 
 .. autofunction:: make_pass_decorator
 
-Utilities
+工具集
 ---------
 
 .. autofunction:: echo
@@ -72,7 +71,7 @@ Utilities
 
 .. autofunction:: format_filename
 
-Commands
+命令
 --------
 
 .. autoclass:: BaseCommand
@@ -90,8 +89,8 @@ Commands
 .. autoclass:: CommandCollection
    :members:
 
-Parameters
-----------
+参数形式
+-----------
 
 .. autoclass:: Parameter
    :members:
@@ -100,7 +99,7 @@ Parameters
 
 .. autoclass:: Argument
 
-Context
+语境
 -------
 
 .. autoclass:: Context
@@ -108,8 +107,8 @@ Context
 
 .. autofunction:: get_current_context
 
-Types
------
+数据类型
+---------
 
 .. autodata:: STRING
 
@@ -136,7 +135,7 @@ Types
 .. autoclass:: ParamType
    :members:
 
-Exceptions
+例外
 ----------
 
 .. autoexception:: ClickException
@@ -155,7 +154,7 @@ Exceptions
 
 .. autoexception:: BadArgumentUsage
 
-Formatting
+格式化
 ----------
 
 .. autoclass:: HelpFormatter
@@ -163,13 +162,13 @@ Formatting
 
 .. autofunction:: wrap_text
 
-Parsing
--------
+语法分析
+-----------
 
 .. autoclass:: OptionParser
    :members:
 
-Testing
+测试
 -------
 
 .. currentmodule:: click.testing
