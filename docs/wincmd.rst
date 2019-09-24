@@ -1,80 +1,70 @@
-Windows Console Notes
-=====================
+Windows 系统终端注意事项
+=============================
 
 .. versionadded:: 6.0
 
-Until Click 6.0 there are various bugs and limitations with using Click on
-a Windows console.  Most notably the decoding of command line arguments
-was performed with the wrong encoding on Python 2 and on all versions of
-Python output of unicode characters was impossible.  Starting with Click
-6.0 we now emulate output streams on Windows to support unicode to the
-Windows console through separate APIs and we perform different decoding of
-parameters.
+直到 Click 6.0 版本在 Windows 系统上有了各种 bugs 和限制。
+最值得注意的是命令行参数的解码过程，因为在 Python 2 上执行了
+错误的编码，并且在所有 Python 版本的 unicode 字符输出都不被
+ Windows 系统支持。从 Click 6.0 开始，我们要在 Windows 系统
+上模拟输出流数据来支持 unicode 到 Windows 终端里，通过另外的
+ APIs 来实现，并且我们执行参数形式的不同解码过程。
 
-Here is a brief overview of how this works and what it means to you.
+本篇文档是关于这是如何工作的简要概述，并且告诉你这么做的意义是什么。
 
-Unicode Arguments
+Unicode 参数
 -----------------
 
-Click internally is generally based on the concept that any argument can
-come in as either byte string or unicode string and conversion is
-performed to the type expected value as late as possible.  This has some
-advantages as it allows us to accept the data in the most appropriate form
-for the operating system and Python version.
+Click 内部通用中依据的概念是任何一个进入的参数即可以是字节字符串，
+也可以是 unicode 字符串，并且稍后尽可能转换成系统所期望的类型。
+这就具有了一些优势，因为让我们接收数据时以最合适的形式提供给
+操作系统和 Python 版本。
 
-For instance paths are left as bytes on Python 2 unless you explicitly
-tell it otherwise.
+例如路径在 Python 2 上都是存储成字节，除非你明确地描述成其它类型。
 
-This caused some problems on Windows where initially the wrong encoding
-was used and garbage ended up in your input data.  We not only fixed the
-encoding part, but we also now extract unicode parameters from `sys.argv`.
+这在 Windows 系统上就会导致一些问题， Windows 系统使用了错误的编码，
+并且把垃圾倒入了你的输入数据中。我们不仅修复了编码部分，也从
+ `sys.argv` 中提取了 unicode 参数形式。
 
-This means that on Python 2 under Windows, the arguments processed will
-*most likely* be of unicode nature and not bytes.  This was something that
-previously did not really happen unless you explicitly passed in unicode
-parameters so your custom types need to be aware of this.
+这样做的意义是，在 Windows 系统上使用 Python 2 时，参数处理会
+*近乎完美地* 以 unicode 实质来呈现，而不是用字节来呈现。这在以前
+是没有人实现过的，除非你明确地代入  unicode 参数形式，那也就是说
+你要自定义类型，而且要掌握这方面的知识。
 
-There is also another limitation with this: if `sys.argv` was modified
-prior to invoking a click handler, we have to fall back to the regular
-byte input in which case not all unicode values are available but only a
-subset of the codepage used for parameters.
+使用时这也有另一种限制: 如果 `sys.argv` 被提前修改过的话，
+触发一个 click 处理器时，我们就被迫回滚到常规的字节输入了，
+在字节输入中字符不能全部是 unicode 值，因为字符范围不同导致
+不能使用全部的字符，对于参数形式来说只可以使用编码页面的一部分
+子集字符内容。
 
-Unicode Output and Input
+Unicode 输出和输入
 ------------------------
 
-Unicode output and input on Windows is implemented through the concept of
-a dispatching text stream.  What this means is that when click first needs
-a text output (or input) stream on windows it goes through a few checks to
-figure out of a windows console is connected or not.  If no Windows
-console is present then the text output stream is returned as such and the
-encoding for that stream is set to ``utf-8`` like on all platforms.
+在 Windows 系统上的 Unicode 输出和输入是通过一种调度文本流数据的概念实现的。
+这是什么意思呢？就是说在 Windows 系统上当 click 第一次需要一个文本输出
+ (或文本输入) 流数据时， click 只能通过较少的检查才能弄清楚一个 Windows 终端
+是否连接成功。如果没有 Windows 终端出现的话，那么文本输出流数据会正常返回，然后
+把流数据编码成 ``utf-8`` 字符集，就像在所有操作系统上的表现一样。
 
-However if a console is connected the stream will instead be emulated and
-use the cmd.exe unicode APIs to output text information.  In this case the
-stream will also use ``utf-16-le`` as internal encoding.  However there is
-some hackery going on that the underlying raw IO buffer is still bypassing
-the unicode APIs and byte output through an indirection is still possible.
+不管如何做到的，如果一个终端连接完成的话，流数据反而会被经过模拟后使用 ``cmd.exe``
+ 的 unicode APIs 来输出文本信息。在这种情况下，流数据也会使用 ``utf-16-le`` 作为
+内部编码。不管如何做到的，这里有一些重新整流工作，根据生食 IO 缓存让其依然保持旁路效应，
+那么 unicode APIs 和字节输出通过一种间接方式获得也存在可能性了。
 
-This hackery is used on both Python 2 and Python 3 as neither version of
-Python has native support for cmd.exe with unicode characters.  There are
-some limitations you need to be aware of:
+这种重新整流工作也用在了 Python 2 和 Python 3 上，因为不管 Python 的哪个版本都
+原生支持 ``cmd.exe`` 使用 unicode 字符。有一些限制是你需要知道的:
 
-*   This unicode support is limited to ``click.echo``, ``click.prompt`` as
-    well as ``click.get_text_stream``.
-*   Depending on if unicode values or byte strings are passed the control
-    flow goes completely different places internally which can have some
-    odd artifacts if data partially ends up being buffered.  Click
-    attempts to protect against that by manually always flushing but if
-    you are mixing and matching different string types to ``stdout`` or
-    ``stderr`` you will need to manually flush.
-*   The raw output stream is set to binary mode, which is a global
-    operation on Windows, so ``print`` calls will be affected. Prefer
-    ``click.echo`` over ``print``.
-*   On Windows 7 and below, there is a limitation where at most 64k
-    characters can be written in one call in binary mode. In this
-    situation, ``sys.stdout`` and ``sys.stderr`` are replaced with
-    wrappers that work around the limitation.
+*   这种 unicode 支持是限制给 ``click.echo``, ``click.prompt`` 和
+     ``click.get_text_stream`` 三个函数的。
+*   依据如果 unicode 值或字节字符串被代入的话，控制流会进入完全不同的内部位置，
+    如果部分数据进入缓存的话，其中有一些奇怪的工艺。 Click 意图通过手动梳理来
+    进行防护，但如果你混合匹配了不同的字符串类型到 ``stdout`` 或 ``stderr`` 
+    的话，你就需要手动执行 `flush` 梳理操作。
+*   生食输出流数据被设置成二进制模式，这在 Windows 系统上是一种全局操作，所以
+     ``print`` 调用会受到影响。最好使用 ``click.echo`` 来代替 ``print`` 用法。
+*   在 Windows 7 以前的操作系统上，有一个限制就是在二进制模式中一次调用里
+    最大可以写 64k 个字符。这种情况下， ``sys.stdout`` 和 ``sys.stderr`` 
+    都要被打包器来代替，打包器是针对这个限制而工作的。
 
-Another important thing to note is that the Windows console's default
-fonts do not support a lot of characters which means that you are mostly
-limited to international letters but no emojis or special characters.
+另一件重要的事要注意，那就是 Windows 终端的默认字体不支持大量字符，
+这就导致你极度地被限制，无法使用全球字符集，包括 emojis 或一些特殊字符也无法使用。
