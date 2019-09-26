@@ -24,23 +24,19 @@ def iter_rows(rows, col_count):
 
 def wrap_text(text, width=78, initial_indent='', subsequent_indent='',
               preserve_paragraphs=False):
-    """A helper function that intelligently wraps text.  By default, it
-    assumes that it operates on a single paragraph of text but if the
-    `preserve_paragraphs` parameter is provided it will intelligently
-    handle paragraphs (defined by two empty lines).
+    """一个助手函数，智能地打包文字。
+    默认情况，它假设了操作在文本的一个段落上，
+    但如果提供了 `preserve_paragraphs` 参数的话，
+    它会智能地处理多个段落 (分段用 2 个空行)。
 
-    If paragraphs are handled, a paragraph can be prefixed with an empty
-    line containing the ``\\b`` character (``\\x08``) to indicate that
-    no rewrapping should happen in that block.
+    如果要处理许多段落的话，一个段落可以用一个含有 ``\\b`` 字符 (``\\x08``) 的空行
+    来说明重新打包不应该发生在这块儿。
 
-    :param text: the text that should be rewrapped.
-    :param width: the maximum width for the text.
-    :param initial_indent: the initial indent that should be placed on the
-                           first line as a string.
-    :param subsequent_indent: the indent string that should be placed on
-                              each consecutive line.
-    :param preserve_paragraphs: if this flag is set then the wrapping will
-                                intelligently handle paragraphs.
+    :param text: 应该重新打包的文本。
+    :param width: 文本的最大宽度。
+    :param initial_indent: 最初的缩紧，应该放在第一行作为一个字符串。
+    :param subsequent_indent: 缩紧字符串，应该放在每个连续行上。
+    :param preserve_paragraphs: 如果设置了这个旗语，那么打包会智能地处理许多段落。
     """
     from ._textwrap import TextWrapper
     text = text.expandtabs()
@@ -87,15 +83,14 @@ def wrap_text(text, width=78, initial_indent='', subsequent_indent='',
 
 
 class HelpFormatter(object):
-    """This class helps with formatting text-based help pages.  It's
-    usually just needed for very special internal cases, but it's also
-    exposed so that developers can write their own fancy outputs.
+    """这个类帮助格式化帮助页面的文本内容。
+    对于特殊的内部情况常常需要用到，但也可以被曝光，
+    因为开发者们可以书写他们自己的输出风格。
 
-    At present, it always writes into memory.
+    目前，这个类会一直写到内存中。
 
-    :param indent_increment: the additional increment for each level.
-    :param width: the width for the text.  This defaults to the terminal
-                  width clamped to a maximum of 78.
+    :param indent_increment: 对每个层次来说都会额外增量计算。
+    :param width: 文本的宽度。默认值是终端的宽度，限制在最大宽度为 78
     """
 
     def __init__(self, indent_increment=2, width=None, max_width=None):

@@ -5,19 +5,18 @@ _local = local()
 
 
 def get_current_context(silent=False):
-    """Returns the current click context.  This can be used as a way to
-    access the current context object from anywhere.  This is a more implicit
-    alternative to the :func:`pass_context` decorator.  This function is
-    primarily useful for helpers such as :func:`echo` which might be
-    interested in changing its behavior based on the current context.
+    """返回当前 click 语境。
+    它可以用来访问任何地方的当前语境对象。这是函数要比
+    用 :func:`pass_context` 函数装饰器更隐含。本函数
+    主要对助手函数有用，例如 :func:`echo` 函数可以改变
+    自身行为，这样在当前语境中的一些变化就变得有趣了。
 
-    To push the current context, :meth:`Context.scope` can be used.
+    要推送当前语境，使用 :meth:`Context.scope` 方法。
 
     .. versionadded:: 5.0
 
-    :param silent: if set to `True` the return value is `None` if no context
-                   is available.  The default behavior is to raise a
-                   :exc:`RuntimeError`.
+    :param silent: 如果设置成 `True` 的话，如果没有语境可用返回 `None` 值。
+                   默认行为是要抛出一个 :exc:`RuntimeError` 例外错误。
     """
     try:
         return getattr(_local, 'stack')[-1]

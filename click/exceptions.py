@@ -9,7 +9,7 @@ def _join_param_hints(param_hint):
 
 
 class ClickException(Exception):
-    """An exception that Click can handle and show to the user."""
+    """Click 可以处理的一个列外，并且显示给用户。"""
 
     #: The exit code for this exception
     exit_code = 1
@@ -41,12 +41,11 @@ class ClickException(Exception):
 
 
 class UsageError(ClickException):
-    """An internal exception that signals a usage error.  This typically
-    aborts any further handling.
+    """一个内部例外，发送一个用法错误信号。
+    典型来说，终止任何下一步处理。
 
-    :param message: the error message to display.
-    :param ctx: optionally the context that caused this error.  Click will
-                fill in the context automatically in some situations.
+    :param message: 要显示的错误消息。
+    :param ctx: 导致这个错误的语境。 Click 会在某些环境中自动填入语境。
     """
     exit_code = 2
 
@@ -71,21 +70,19 @@ class UsageError(ClickException):
 
 
 class BadParameter(UsageError):
-    """An exception that formats out a standardized error message for a
-    bad parameter.  This is useful when thrown from a callback or type as
-    Click will attach contextual information to it (for instance, which
-    parameter it is).
+    """一个例外，能够为败坏的参数形式格式化成一种标准化过的错误消息。
+    当从一个回调函数或类型抛出来的时候是有用的，因为 Click 会把语境的
+    信息附在其后 (例如，是哪个败坏的参数形式)。
 
     .. versionadded:: 2.0
 
-    :param param: the parameter object that caused this error.  This can
-                  be left out, and Click will attach this info itself
-                  if possible.
-    :param param_hint: a string that shows up as parameter name.  This
-                       can be used as alternative to `param` in cases
-                       where custom validation should happen.  If it is
-                       a string it's used as such, if it's a list then
-                       each item is quoted and separated.
+    :param param: 会导致这个错误的参数形式对象。这个可以不填写，
+                  并且可能的话 Click 会把这个信息追加到自身上。
+    :param param_hint: 作为参数形式名显示的一个字符串。
+                       在自定义验证应该发生的环境中，
+                       这个可以用作另一种形式给 `param` 。
+                       如果是一个字符串的话，就会用这个字符串，
+                       如果是一个列表的话，每项元素会被引用后分离开来。
     """
 
     def __init__(self, message, ctx=None, param=None,
@@ -154,8 +151,7 @@ class MissingParameter(BadParameter):
 
 
 class NoSuchOption(UsageError):
-    """Raised if click attempted to handle an option that does not
-    exist.
+    """如果 click 要处理一个可选项的话，可选项不存在就会抛出这个例外。
 
     .. versionadded:: 4.0
     """
@@ -180,13 +176,12 @@ class NoSuchOption(UsageError):
 
 
 class BadOptionUsage(UsageError):
-    """Raised if an option is generally supplied but the use of the option
-    was incorrect.  This is for instance raised if the number of arguments
-    for an option is not correct.
+    """如果通用中提供了一个可选项，却使用错误的话，会抛出这个例外。
+    例如，如果对一个可选项的参数数量用错了，就会抛出这个例外。
 
     .. versionadded:: 4.0
 
-    :param option_name: the name of the option being used incorrectly.
+    :param option_name: 不正确使用的可选项名字。
     """
 
     def __init__(self, option_name, message, ctx=None):
@@ -195,9 +190,8 @@ class BadOptionUsage(UsageError):
 
 
 class BadArgumentUsage(UsageError):
-    """Raised if an argument is generally supplied but the use of the argument
-    was incorrect.  This is for instance raised if the number of values
-    for an argument is not correct.
+    """如果通用中提供了一个参数，却使用错误，就会抛出这个例外。
+    例如，对一个参数的值数量用错了，就会抛出这个例外。
 
     .. versionadded:: 6.0
     """
@@ -207,7 +201,7 @@ class BadArgumentUsage(UsageError):
 
 
 class FileError(ClickException):
-    """Raised if a file cannot be opened."""
+    """如果无法打开一个文件的话，会抛出这个例外。"""
 
     def __init__(self, filename, hint=None):
         ui_filename = filename_to_ui(filename)
@@ -222,7 +216,7 @@ class FileError(ClickException):
 
 
 class Abort(RuntimeError):
-    """An internal signalling exception that signals Click to abort."""
+    """一个内部发送例外信号的例外，告诉 Click 终止运行。"""
 
 
 class Exit(RuntimeError):

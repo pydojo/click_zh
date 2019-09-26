@@ -9,17 +9,15 @@ from .utils import safecall, LazyFile
 
 
 class ParamType(object):
-    """Helper for converting values through types.  The following is
-    necessary for a valid type:
+    """帮助通过类型来转换值。如下是合法类型:
 
-    *   it needs a name
-    *   it needs to pass through None unchanged
-    *   it needs to convert from a string
-    *   it needs to convert its result type through unchanged
-        (eg: needs to be idempotent)
-    *   it needs to be able to deal with param and context being `None`.
-        This can be the case when the object is used with prompt
-        inputs.
+    *   需要一个名字
+    *   需要通过 None 来传递未变更
+    *   需要从一个字符串来进行转换
+    *   需要通过未变更来转换自身结果类型
+        (例如: 需要被注释)
+    *   需要能够处理 param 和语境为 `None` 情况。
+        这可以是当对象与提示输入一起使用的情况。
     """
     is_composite = False
 
@@ -127,16 +125,16 @@ class StringParamType(ParamType):
 
 
 class Choice(ParamType):
-    """The choice type allows a value to be checked against a fixed set
-    of supported values. All of these values have to be strings.
+    """选择类型允许一个值经过所支持的固定值集合做检查。
+    所有哪些能用的值都要用字符串。
 
-    You should only pass a list or tuple of choices. Other iterables
-    (like generators) may lead to surprising results.
+    你应该只采用列表或元组来作为代入的候选清单。
+    其它可迭代对象 (例如生成器对象) 会导致意外结果。
 
-    See :ref:`choice-opts` for an example.
+    查看 :ref:`choice-opts` 选择可选值文档中的示例。
 
-    :param case_sensitive: Set to false to make choices case
-        insensitive. Defaults to true.
+    :param case_sensitive: 设置成 `False` 会开启大小写敏感功能。
+        默认值是 `True` 效果是脱敏。
     """
 
     name = 'choice'
@@ -250,12 +248,10 @@ class IntParamType(ParamType):
 
 
 class IntRange(IntParamType):
-    """A parameter that works similar to :data:`click.INT` but restricts
-    the value to fit into a range.  The default behavior is to fail if the
-    value falls outside the range, but it can also be silently clamped
-    between the two edges.
+    """一种类似 :data:`click.INT` 的数据类型，但把值限制在一个范围里。
+    如果值超出范围的话，默认行为会失败，但也可以把超出范围但值固定成边缘值。
 
-    See :ref:`ranges` for an example.
+    阅读 :ref:`ranges` 参考文档了解一个示例。
     """
     name = 'integer range'
 
@@ -303,12 +299,10 @@ class FloatParamType(ParamType):
 
 
 class FloatRange(FloatParamType):
-    """A parameter that works similar to :data:`click.FLOAT` but restricts
-    the value to fit into a range.  The default behavior is to fail if the
-    value falls outside the range, but it can also be silently clamped
-    between the two edges.
+    """一种参数形式，工作起来类似 :data:`click.FLOAT` 但把值限制在一个范围里。
+    如果值超出了范围的话，默认行为会失败，但也可以默默地把超出范围的值设定成边缘值。
 
-    See :ref:`ranges` for an example.
+    阅读 :ref:`ranges` 了解示例。
     """
     name = 'float range'
 
@@ -375,30 +369,22 @@ class UUIDParameterType(ParamType):
 
 
 class File(ParamType):
-    """Declares a parameter to be a file for reading or writing.  The file
-    is automatically closed once the context tears down (after the command
-    finished working).
+    """把一个参数形式声明成一个文件进行读取或写入。
+    文件是自动通过语境关闭的 (命令执行完成后)。
 
-    Files can be opened for reading or writing.  The special value ``-``
-    indicates stdin or stdout depending on the mode.
+    文件都可以为读取或写入而打开。特殊值 ``-`` 根据开启的模式变成了标准输入或标准输出文件。
 
-    By default, the file is opened for reading text data, but it can also be
-    opened in binary mode or for writing.  The encoding parameter can be used
-    to force a specific encoding.
+    默认情况下，文件是为读取文本数据而打开，但也可以打开二进制模式的读写。可以具体描述编码参数。
 
-    The `lazy` flag controls if the file should be opened immediately or upon
-    first IO. The default is to be non-lazy for standard input and output
-    streams as well as files opened for reading, `lazy` otherwise. When opening a
-    file lazily for reading, it is still opened temporarily for validation, but
-    will not be held open until first IO. lazy is mainly useful when opening
-    for writing to avoid creating the file until it is needed.
+    其中 `lazy` 旗语控制文件是否立即打开，或先打开 IO 接口。这就是懒蛋模式！
+    对于标准输入和标准输出流数据来说，默认是非懒蛋模式，文件为读取打开时也是一样，反之就是懒蛋模式。
+    当用懒蛋模式打开一个文件读取时，依然是临时打开进行验证，但不会保持打开状态，除非先打开 IO 接口。
+    懒蛋模式主要用处是，当为写入打开时，可以避免建立文件，除非需要才会建立文件。
 
-    Starting with Click 2.0, files can also be opened atomically in which
-    case all writes go into a separate file in the same folder and upon
-    completion the file will be moved over to the original location.  This
-    is useful if a file regularly read by other users is modified.
+    从 Click 2.0 开始，文件也可以自动地打开，这种情况下所有写入都会进入相同文件夹里的单个文件，
+    并且直到完成文件会被移动到原始位置。如果一个文件常规地由其它用户修改的话，这是有用的。
 
-    See :ref:`file-args` for more information.
+    阅读 :ref:`file-args` 参考文档了解更多信息。
     """
     name = 'filename'
     envvar_list_splitter = os.path.pathsep
@@ -456,34 +442,27 @@ class File(ParamType):
 
 
 class Path(ParamType):
-    """The path type is similar to the :class:`File` type but it performs
-    different checks.  First of all, instead of returning an open file
-    handle it returns just the filename.  Secondly, it can perform various
-    basic checks about what the file or directory should be.
+    """路径类型类似 :class:`File` 文件类型，但执行了不同的检查。
+    首先，代替返回一个打开的文件处理，而只是返回文件名。
+    第二，可以执行各种基础检查，是文件还是目录。
 
     .. versionchanged:: 6.0
-       `allow_dash` was added.
+       其中增加了 `allow_dash` 参数。
 
-    :param exists: if set to true, the file or directory needs to exist for
-                   this value to be valid.  If this is not required and a
-                   file does indeed not exist, then all further checks are
-                   silently skipped.
-    :param file_okay: controls if a file is a possible value.
-    :param dir_okay: controls if a directory is a possible value.
-    :param writable: if true, a writable check is performed.
-    :param readable: if true, a readable check is performed.
-    :param resolve_path: if this is true, then the path is fully resolved
-                         before the value is passed onwards.  This means
-                         that it's absolute and symlinks are resolved.  It
-                         will not expand a tilde-prefix, as this is
-                         supposed to be done by the shell only.
-    :param allow_dash: If this is set to `True`, a single dash to indicate
-                       standard streams is permitted.
-    :param path_type: optionally a string type that should be used to
-                      represent the path.  The default is `None` which
-                      means the return value will be either bytes or
-                      unicode depending on what makes most sense given the
-                      input data Click deals with.
+    :param exists: 如果设置成 `True` 的话，文件或目录需要存在才是合法情况。
+                   如果不需要存在检查并且确实没有一个文件的话，那么所有后面
+                   的检查都默默地跳过。
+    :param file_okay: 控制是否可能是一个文件。
+    :param dir_okay: 控制是否可能是一个目录。
+    :param writable: 如果设置成 `True` 的话，执行可写检查。
+    :param readable: 如果设置成 `True` 的话，执行可读检查。
+    :param resolve_path: 如何设置成 `True` 的话，在值传递下去之前变成完整路径。
+                         意思就是绝对路径和软连接都要得到解决。本功能不会展开
+                         带 `~` 的路径前缀，因为翻译这个路径写法只由终端来支持。
+    :param allow_dash: 如果设置成 `True` 的话，允许一个减号指明标准流数据。
+    :param path_type: 应该用来表示路径的一种字符串类型。默认值是 `None` 意思是
+                      返回值即可以是字节，也可以是 unicode 。对于 unicode 来说
+                      要根据提供的输入数据最有意义的内容由 Click 来处理。
     """
     envvar_list_splitter = os.path.pathsep
 
@@ -561,17 +540,16 @@ class Path(ParamType):
 
 
 class Tuple(CompositeParamType):
-    """The default behavior of Click is to apply a type on a value directly.
-    This works well in most cases, except for when `nargs` is set to a fixed
-    count and different types should be used for different items.  In this
-    case the :class:`Tuple` type can be used.  This type can only be used
-    if `nargs` is set to a fixed number.
+    """Click 的默认行为是直接把一个类型作用在一个值上。
+    在大多数情况中都工作良好，除了当 `nargs` 设置成一个固定数量时，
+    元组中的元素使用了不同的类型。在这种情况下，就要使用 :class:`Tuple` 类了。
+    这个类型只可以与 `nargs` 参数值是一个固定数字时使用。
 
-    For more information see :ref:`tuple-type`.
+    对于更多信息阅读 :ref:`tuple-type` 参考文档。
 
-    This can be selected by using a Python tuple literal as a type.
+    这可以使用一个 Python 元组来选择成一个类型。
 
-    :param types: a list of types that should be used for the tuple items.
+    :param types: 类型组成的一个列表，其中类型应该用作元组中的元素。
     """
 
     def __init__(self, types):

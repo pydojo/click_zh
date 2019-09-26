@@ -160,86 +160,63 @@ class ParameterSource(object):
 
 
 class Context(object):
-    """The context is a special internal object that holds state relevant
-    for the script execution at every single level.  It's normally invisible
-    to commands unless they opt-in to getting access to it.
+    """语境类是一个特殊的内部对象。
+    它是用来保存与脚本执行有关的状态，作用在每个层次上执行的脚本。
+    正常来说命令是看不到这个类的，除非命令开启了这个功能才可以访问语境对象。
 
-    The context is useful as it can pass internal objects around and can
-    control special execution features such as reading data from
-    environment variables.
+    语境是有用的，因为语境可以传递内部对象，并且可以控制特殊的执行特性，
+    例如从环境变量中读取数据。
 
-    A context can be used as context manager in which case it will call
-    :meth:`close` on teardown.
+    一个语境可以用作语境管理器，在语境管理器环境中会在 teardown 上调用
+    :meth:`close` 方法。
 
     .. versionadded:: 2.0
-       Added the `resilient_parsing`, `help_option_names`,
-       `token_normalize_func` parameters.
+       其中增加了 `resilient_parsing` 、 `help_option_names` 
+       和 `token_normalize_func` 参数。
 
     .. versionadded:: 3.0
-       Added the `allow_extra_args` and `allow_interspersed_args`
-       parameters.
+       其中增加了 `allow_extra_args` 和 `allow_interspersed_args`
+       参数。
 
     .. versionadded:: 4.0
-       Added the `color`, `ignore_unknown_options`, and
-       `max_content_width` parameters.
+       其中增加了 `color` 、 `ignore_unknown_options` 和
+       `max_content_width` 参数。
 
-    :param command: the command class for this context.
-    :param parent: the parent context.
-    :param info_name: the info name for this invocation.  Generally this
-                      is the most descriptive name for the script or
-                      command.  For the toplevel script it is usually
-                      the name of the script, for commands below it it's
-                      the name of the script.
-    :param obj: an arbitrary object of user data.
-    :param auto_envvar_prefix: the prefix to use for automatic environment
-                               variables.  If this is `None` then reading
-                               from environment variables is disabled.  This
-                               does not affect manually set environment
-                               variables which are always read.
-    :param default_map: a dictionary (like object) with default values
-                        for parameters.
-    :param terminal_width: the width of the terminal.  The default is
-                           inherit from parent context.  If no context
-                           defines the terminal width then auto
-                           detection will be applied.
-    :param max_content_width: the maximum width for content rendered by
-                              Click (this currently only affects help
-                              pages).  This defaults to 80 characters if
-                              not overridden.  In other words: even if the
-                              terminal is larger than that, Click will not
-                              format things wider than 80 characters by
-                              default.  In addition to that, formatters might
-                              add some safety mapping on the right.
-    :param resilient_parsing: if this flag is enabled then Click will
-                              parse without any interactivity or callback
-                              invocation.  Default values will also be
-                              ignored.  This is useful for implementing
-                              things such as completion support.
-    :param allow_extra_args: if this is set to `True` then extra arguments
-                             at the end will not raise an error and will be
-                             kept on the context.  The default is to inherit
-                             from the command.
-    :param allow_interspersed_args: if this is set to `False` then options
-                                    and arguments cannot be mixed.  The
-                                    default is to inherit from the command.
-    :param ignore_unknown_options: instructs click to ignore options it does
-                                   not know and keeps them for later
-                                   processing.
-    :param help_option_names: optionally a list of strings that define how
-                              the default help parameter is named.  The
-                              default is ``['--help']``.
-    :param token_normalize_func: an optional function that is used to
-                                 normalize tokens (options, choices,
-                                 etc.).  This for instance can be used to
-                                 implement case insensitive behavior.
-    :param color: controls if the terminal supports ANSI colors or not.  The
-                  default is autodetection.  This is only needed if ANSI
-                  codes are used in texts that Click prints which is by
-                  default not the case.  This for instance would affect
-                  help output.
-    :param show_default: if True, shows defaults for all options.
-                    Even if an option is later created with show_default=False,
-                    this command-level setting overrides it.
+    :param command: 使用语境的命令类。
+    :param parent: 父语境。
+    :param info_name: 语境内部的信息名。通用中，描述的名字常是脚本或命令。
+                      对于顶层的脚本来说，常是脚本的名字，对于脚本下面的
+                      命令来说也是脚本的名字。
+    :param obj: 用户数据的任意一个对象。
+    :param auto_envvar_prefix: 为自动的环境变量使用的前缀。
+                               如何设置成 `None` 的话，无法从环境变量中读取。
+                               这不会影响手动设置环境变量，因为手动设置会一直读取。
+    :param default_map: 一个含有参数默认值的字典 (类似对象) 。
+    :param terminal_width: 终端的宽度。默认值继承自父语境。如果语境没定义终端宽度，
+                           会自动进行检测。
+    :param max_content_width: 被 Click 渲染的内容最大宽度值 (目前只作用在帮助页面上)。
+                              如果不覆写这个值的话，默认是 80 个字符的宽度。
+                              换句话说: 即时终端更大的话， Click 不会格式化宽度大于
+                              这个值，默认情况不会大于 80 个字符宽。另外，格式化器也许
+                              增加一些安全映射内容在右边。
+    :param resilient_parsing: 如果开启这个旗语的话， Click 会不带互动或回调语境来执行
+                              语法分析。默认值也会忽略。对于实现补全功能时是有用的。
+    :param allow_extra_args: 如果设置成 `True` 的话，那么尾部的额外参数不会抛出一个例外，
+                             并且会保存在语境中。默认值是继承自命令的。
+    :param allow_interspersed_args: 如果设置成 `False` 的话，那么不能混用可选项和参数。
+                                    默认值是继承自命令的。
+    :param ignore_unknown_options: 指导 click 忽略不知道的可选项，并且把未知可选项
+                                   保存下来稍后处理。
+    :param help_option_names: 可以用字符串组成的一个列表，字符串都是参数形式名。
+                              如何定义默认帮助参数的名字，默认值是 ``['--help']``
+    :param token_normalize_func: 一个用来正常化令牌的函数 (令牌包括可选项、选项等等对象)。
+                                 例如可以用来实现大小写敏感行为。
+    :param color: 控制终端是否支持 ANSI 色彩机制。默认是自动检测。
+                  如果 ANSI 颜色代号用在文本上就需要这个值， Click
+                  默认不会输出变色文字。这个也会影响帮助页面的输出。
+    :param show_default: 如果设置成 `True` 的话，对于所有可选项来说会显示默认值。
+                    即使一个可选项稍后用 `show_default=False` 来建立的话，
+                    这种命令层的设置会覆写可选项层的值。
     """
 
     def __init__(self, command, parent=None, info_name=None, obj=None,
@@ -388,32 +365,28 @@ class Context(object):
 
     @contextmanager
     def scope(self, cleanup=True):
-        """This helper method can be used with the context object to promote
-        it to the current thread local (see :func:`get_current_context`).
-        The default behavior of this is to invoke the cleanup functions which
-        can be disabled by setting `cleanup` to `False`.  The cleanup
-        functions are typically used for things such as closing file handles.
+        """这是一个辅助方法，可以与语境对象一起使用。
+        把语境对象给当前本地线程 (查看 :func:`get_current_context` 函数)。
+        本函数默认行为是触发 cleanup 函数，可以通过把 `cleanup` 设置成 
+        `False` 来禁用。 cleanup 函数典型来说都是用来像关闭文件处理这样的操作。
 
-        If the cleanup is intended the context object can also be directly
-        used as a context manager.
+        如果想要 cleanup 效果在语境对象上自动执行，也可以直接用作一个语境管理器。
 
-        Example usage::
+        示例用法::
 
             with ctx.scope():
                 assert get_current_context() is ctx
 
-        This is equivalent::
+        等价用法::
 
             with ctx:
                 assert get_current_context() is ctx
 
         .. versionadded:: 5.0
 
-        :param cleanup: controls if the cleanup functions should be run or
-                        not.  The default is to run these functions.  In
-                        some situations the context only wants to be
-                        temporarily pushed in which case this can be disabled.
-                        Nested pushes automatically defer the cleanup.
+        :param cleanup: 控制是否要运行 cleanup 函数。默认是运行这些函数。
+                        在一些情况中，语境只想临时被推送，那就要禁用。
+                        嵌入的推送自动推迟 cleanup 函数的执行。
         """
         if not cleanup:
             self._depth += 1
@@ -638,25 +611,23 @@ class Context(object):
 
 
 class BaseCommand(object):
-    """The base command implements the minimal API contract of commands.
-    Most code will never use this as it does not implement a lot of useful
-    functionality but it can act as the direct subclass of alternative
-    parsing methods that do not depend on the Click parser.
+    """基础命令类实现了命令最小化的 API 协议。
+    大部分代码永远不会使用这个类，因为没有部署大量有用的功能，
+    本类只扮演了基类的角色，直接作为子类的父类来用，另外语法分析
+    方法不依赖 Click 的语法分析器。
 
-    For instance, this can be used to bridge Click and other systems like
-    argparse or docopt.
+    例如，可以用本类来作为 Click 和其它系统之间的桥梁，就像
+    argparse 库或 docopt 库。
 
-    Because base commands do not implement a lot of the API that other
-    parts of Click take for granted, they are not supported for all
-    operations.  For instance, they cannot be used with the decorators
-    usually and they have no built-in callback system.
+    由于基类不实现大量 Click 其它部分许可使用的 API 接口，
+    所以基类都不支持所有操作。例如，基类不能与装饰器一起使用，
+    并且基类也没有内置回调系统。
 
     .. versionchanged:: 2.0
-       Added the `context_settings` parameter.
+       其中增加了 `context_settings` 参数。
 
-    :param name: the name of the command to use unless a group overrides it.
-    :param context_settings: an optional dictionary with defaults that are
-                             passed to the context object.
+    :param name: 要使用的命令名，除非一个群组命令覆写它。
+    :param context_settings: 一个字典数据类型值，默认都会提供给语境对象。
     """
     #: the default for the :attr:`Context.allow_extra_args` flag.
     allow_extra_args = False
@@ -829,38 +800,35 @@ class BaseCommand(object):
 
 
 class Command(BaseCommand):
-    """Commands are the basic building block of command line interfaces in
-    Click.  A basic command handles command line parsing and might dispatch
-    more parsing to commands nested below it.
+    """本类是 Click 中命令行接口的基础建筑块。
+    一个基础命令处理命令行语法分析，并且调度更多
+    的语法分析作用在嵌入式命令上。
 
     .. versionchanged:: 2.0
-       Added the `context_settings` parameter.
+       其中增加了 `context_settings` 参数。
     .. versionchanged:: 8.0
-       Added repr showing the command name
+       其中增加了 repr 命令名显示形式。
     .. versionchanged:: 7.1
-       Added the `no_args_is_help` parameter.
+       其中增加了 `no_args_is_help` 参数。
 
-    :param name: the name of the command to use unless a group overrides it.
-    :param context_settings: an optional dictionary with defaults that are
-                             passed to the context object.
-    :param callback: the callback to invoke.  This is optional.
-    :param params: the parameters to register with this command.  This can
-                   be either :class:`Option` or :class:`Argument` objects.
-    :param help: the help string to use for this command.
-    :param epilog: like the help string but it's printed at the end of the
-                   help page after everything else.
-    :param short_help: the short help to use for this command.  This is
-                       shown on the command listing of the parent command.
-    :param add_help_option: by default each command registers a ``--help``
-                            option.  This can be disabled by this parameter.
-    :param no_args_is_help: this controls what happens if no arguments are
-                            provided.  This option is disabled by default.
-                            If enabled this will add ``--help`` as argument
-                            if no arguments are passed
-    :param hidden: hide this command from help outputs.
+    :param name: 要使用的命令名，除非一个群组命令覆写它。
+    :param context_settings: 一个字典数据类型，默认提供给语境对象。
+    :param callback: 要触发的回调。可选可不选。
+    :param params: 注册给这个命令的参数。即可以是 :class:`Option` 
+                   也可以是 :class:`Argument` 对象。
+    :param help: 这个命令要使用的帮助页面字符串。
+    :param epilog: 类似帮助字符串，但显示在帮助页面最后位置。
+    :param short_help: 这个命令要使用的简短帮助字符串。这会显示在
+                       父命令的命令清单上。
+    :param add_help_option: 默认给每个命令注册一个 ``--help`` 可选项。
+                            通过这个参数可以显示。
+    :param no_args_is_help: 这是控制如果不提供多个参数时的情况。
+                            默认会显示这个选项。如果开启这个参数
+                            没有多个参数代入的话会把 ``--help``
+                            增加成参数。
+    :param hidden: 隐藏这个命令，不显示在帮助输出中。
 
-    :param deprecated: issues a message indicating that
-                             the command is deprecated.
+    :param deprecated: 发布一条消息说明命令已经被淘汰了。
     """
 
     def __init__(self, name, context_settings=None, callback=None,
@@ -1047,27 +1015,21 @@ class Command(BaseCommand):
 
 
 class MultiCommand(Command):
-    """A multi command is the basic implementation of a command that
-    dispatches to subcommands.  The most common version is the
-    :class:`Group`.
+    """多命令是一种命令的基础实现，它调度成子命令。
+    最共性的版本就是用于 :class:`Group` 类。
 
-    :param invoke_without_command: this controls how the multi command itself
-                                   is invoked.  By default it's only invoked
-                                   if a subcommand is provided.
-    :param no_args_is_help: this controls what happens if no arguments are
-                            provided.  This option is enabled by default if
-                            `invoke_without_command` is disabled or disabled
-                            if it's enabled.  If enabled this will add
-                            ``--help`` as argument if no arguments are
-                            passed.
-    :param subcommand_metavar: the string that is used in the documentation
-                               to indicate the subcommand place.
-    :param chain: if this is set to `True` chaining of multiple subcommands
-                  is enabled.  This restricts the form of commands in that
-                  they cannot have optional arguments but it allows
-                  multiple commands to be chained together.
-    :param result_callback: the result callback to attach to this multi
-                            command.
+    :param invoke_without_command: 这是控制多命令自身是如何被触发的。
+                                   如果提供了一个子命令，默认被触发。
+    :param no_args_is_help: 这是控制如果不提供多参数会发生什么。
+                            如果 `invoke_without_command` 被禁用，
+                            默认开启这个选项，反之否然。如果开启这个参数
+                            如果没有多参数代入的话，会把 ``--help`` 
+                            作为参数加入。
+    :param subcommand_metavar: 用在文档中的字符串，说明子命令的位置。
+    :param chain: 如果设置成 `True` 的话，多个子命令锁链就被开启。
+                  这会限制命令的形式，命令不能有可选项参数，但允许有
+                  多命令串联在一起。
+    :param result_callback: 提供给这个多命令的回调结果。
     """
     allow_extra_args = True
     allow_interspersed_args = False
@@ -1293,10 +1255,10 @@ class MultiCommand(Command):
 
 
 class Group(MultiCommand):
-    """A group allows a command to have subcommands attached.  This is the
-    most common way to implement nesting in Click.
+    """一个群组命令类，允许一个主命令有许多子命令在其后。
+    最共性的方法就是在 Click 中部署嵌入式命令。
 
-    :param commands: a dictionary of commands.
+    :param commands: 许多命令组成的一个字典数据类型。
     """
 
     def __init__(self, name=None, commands=None, **attrs):
@@ -1315,10 +1277,10 @@ class Group(MultiCommand):
         self.commands[name] = cmd
 
     def command(self, *args, **kwargs):
-        """A shortcut decorator for declaring and attaching a command to
-        the group.  This takes the same arguments as :func:`command` but
-        immediately registers the created command with this instance by
-        calling into :meth:`add_command`.
+        """一个用来声明一个命令和把一个命令加入群组的快捷装饰器。
+        本装饰器得到的参数与 :func:`command` 函数一样，但通过
+        调用 :meth:`add_command` 方法立即注册含有本类实例的
+        已建立完的命令。
         """
         def decorator(f):
             cmd = command(*args, **kwargs)(f)
@@ -1327,10 +1289,10 @@ class Group(MultiCommand):
         return decorator
 
     def group(self, *args, **kwargs):
-        """A shortcut decorator for declaring and attaching a group to
-        the group.  This takes the same arguments as :func:`group` but
-        immediately registers the created command with this instance by
-        calling into :meth:`add_command`.
+        """为声明和把一个群组加入到群组中的一种快捷装饰器。
+        本装饰器得到的参数与 :func:`group` 函数一样，但
+        通过调用 :meth:`add_command` 方法立即注册含有
+        本类实例的已建立完的命令。
         """
         def decorator(f):
             cmd = group(*args, **kwargs)(f)
@@ -1346,10 +1308,9 @@ class Group(MultiCommand):
 
 
 class CommandCollection(MultiCommand):
-    """A command collection is a multi command that merges multiple multi
-    commands together into one.  This is a straightforward implementation
-    that accepts a list of different multi commands as sources and
-    provides all the commands for each of them.
+    """一个命令收集类是把多个多命令合并成一个多命令的类。
+    本类直接实现了接收不同多命令形成的一个列表作为源头，
+    并且提供所有的命令给每个多命令。
     """
 
     def __init__(self, name=None, sources=None, **attrs):
@@ -1377,47 +1338,41 @@ class CommandCollection(MultiCommand):
 
 
 class Parameter(object):
-    r"""A parameter to a command comes in two versions: they are either
-    :class:`Option`\s or :class:`Argument`\s.  Other subclasses are currently
-    not supported by design as some of the internals for parsing are
-    intentionally not finalized.
+    r"""提供给命令的一种参数形式，有 2 个版本。
+    参数形式即可以是 :class:`Option` 类，也可以是 :class:`Argument` 类。
+    其它子类目前都不支持，由于设计的一些内部语法分析在内部还没有完成。
 
-    Some settings are supported by both options and arguments.
+    一些配置都是通过可选项和参数来支持的。
 
     .. versionchanged:: 2.0
-       Changed signature for parameter callback to also be passed the
-       parameter.  In Click 2.0, the old callback format will still work,
-       but it will raise a warning to give you change to migrate the
-       code easier.
+       对参数形式回调足够的变更，也可以代入到参数形式中了。
+       在 Click 2.0 版本中，老旧的回调格式依然有效，但
+       会抛出一个警告，可以变成更容易的代码格式。
 
-    :param param_decls: the parameter declarations for this option or
-                        argument.  This is a list of flags or argument
-                        names.
-    :param type: the type that should be used.  Either a :class:`ParamType`
-                 or a Python type.  The later is converted into the former
-                 automatically if supported.
-    :param required: controls if this is optional or not.
-    :param default: the default value if omitted.  This can also be a callable,
-                    in which case it's invoked when the default is needed
-                    without any arguments.
-    :param callback: a callback that should be executed after the parameter
-                     was matched.  This is called as ``fn(ctx, param,
-                     value)`` and needs to return the value.  Before Click
-                     2.0, the signature was ``(ctx, value)``.
-    :param nargs: the number of arguments to match.  If not ``1`` the return
-                  value is a tuple instead of single value.  The default for
-                  nargs is ``1`` (except if the type is a tuple, then it's
-                  the arity of the tuple). If ``nargs=-1``, all remaining
-                  parameters are collected.
-    :param metavar: how the value is represented in the help page.
-    :param expose_value: if this is `True` then the value is passed onwards
-                         to the command callback and stored on the context,
-                         otherwise it's skipped.
-    :param is_eager: eager values are processed before non eager ones.  This
-                     should not be set for arguments or it will inverse the
-                     order of processing.
-    :param envvar: a string or list of strings that are environment variables
-                   that should be checked.
+    :param param_decls: 针对可选项或参数的参数形式声明。
+                        这是一个旗语组成的列表，或参数名组成的列表。
+    :param type: 你应该使用的类型。既可以是一个 :class:`ParamType`
+                 也可以是一个 Python 类型。对于 Python 类型来说如果
+                 支持的话，会自动转换成前者的形式。
+    :param required: 控制是否是可选的。
+    :param default: 如果命令行不使用参数形式的话，会使用默认值。
+                    当设置默认值时，也可以是一个可调用对象。
+    :param callback: 一个回调函数，参数形式匹配上以后才会执行回调函数。
+                     回调函数定义成 ``fn(ctx, param, value)`` 样式，
+                     并且要返回 `value` 这个参数。在 Click 2.0 以前，
+                     回调函数的信号曾是 ``(ctx, value)`` 形式。
+    :param nargs: 要匹配的参数数量。如果设置的不是 ``1`` 返回值是一个元组，
+                  就不再是单个值的信号了。默认是 ``1`` (除了类型是一个元组
+                  的话，那么这个参数值就是元组的长度)。如果 ``nargs=-1`` 
+                  的话，对可选项来说会抛出类型错误。
+    :param metavar: 在帮助页面中如何显示值。
+    :param expose_value: 如果设置成 `True` 的话，那么值会提供给命令回调后
+                         存储在语境上，否则会跳过。
+    :param is_eager: 期望值都会在非期望值之前进行处理。
+                     这个参数不应该设置给参数，否则会
+                     把处理顺序变成逆序。
+    :param envvar: 一个字符串或字符串组成的一个列表。
+                   内容都是应该被检查的环境变量名。
     """
     param_type_name = 'parameter'
 
@@ -1451,8 +1406,8 @@ class Parameter(object):
 
     @property
     def human_readable_name(self):
-        """Returns the human readable name of this parameter.  This is the
-        same as the name for options, but the metavar for arguments.
+        """返回适合人类阅读的参数形式名字。
+        与可选项名一样，但参数名会是 metavar 形式。
         """
         return self.name
 
@@ -1596,42 +1551,35 @@ class Parameter(object):
 
 
 class Option(Parameter):
-    """Options are usually optional values on the command line and
-    have some extra features that arguments don't have.
+    """可选项类都常常是命令行中可选项的值。
+    并且有些额外特性是参数类所有没有的。
 
-    All other parameters are passed onwards to the parameter constructor.
+    所有其它参数都代入到参数形式构造器中。
 
-    :param show_default: controls if the default value should be shown on the
-                         help page. Normally, defaults are not shown. If this
-                         value is a string, it shows the string instead of the
-                         value. This is particularly useful for dynamic options.
-    :param show_envvar: controls if an environment variable should be shown on
-                        the help page.  Normally, environment variables
-                        are not shown.
-    :param prompt: if set to `True` or a non empty string then the user will be
-                   prompted for input.  If set to `True` the prompt will be the
-                   option name capitalized.
-    :param confirmation_prompt: if set then the value will need to be confirmed
-                                if it was prompted for.
-    :param hide_input: if this is `True` then the input on the prompt will be
-                       hidden from the user.  This is useful for password
-                       input.
-    :param is_flag: forces this option to act as a flag.  The default is
-                    auto detection.
-    :param flag_value: which value should be used for this flag if it's
-                       enabled.  This is set to a boolean automatically if
-                       the option string contains a slash to mark two options.
-    :param multiple: if this is set to `True` then the argument is accepted
-                     multiple times and recorded.  This is similar to ``nargs``
-                     in how it works but supports arbitrary number of
-                     arguments.
-    :param count: this flag makes an option increment an integer.
-    :param allow_from_autoenv: if this is enabled then the value of this
-                               parameter will be pulled from an environment
-                               variable in case a prefix is defined on the
-                               context.
-    :param help: the help string.
-    :param hidden: hide this option from help outputs.
+    :param show_default: 控制默认值是否要显示在帮助页面上。
+                         正常情况，默认值是不限时的。如果
+                         设置的值是一个字符串的话，显示的
+                         是字符串而不是值了。对于动态可选项
+                         来说这是特别有用。
+    :param show_envvar: 控制一个环境变量是否应该显示在帮助
+                        页面上。正常来说，不显示环境变量。
+    :param prompt: 如果设置成 `True` 或一种非空字符串的话，
+                   那么在用户输入时会提示给用户。设置成 `True` 
+                   时，提示的会是首字母大写的可选项名字。
+    :param confirmation_prompt: 如果设置的话，会需要对输入进行再次确认提示。
+    :param hide_input: 如果设置成 `True` 在提示输入时隐藏用户的输入内容。
+                       对于输入密码时是有用的。
+    :param is_flag: 让可选项扮演一个旗语的角色。默认是自动检测的。
+    :param flag_value: 如果开启旗语功能的话，设置旗语值。
+                       如果可选项字符串中含有一个斜杠来
+                       分隔两项的话，会自动设置成布尔值。
+    :param multiple: 如果设置成 `True` 那么参数会被接收很多次并记录下来。
+                     这类似 ``nargs`` 参数，但支持任意参数数量。
+    :param count: 开启这个旗语会让一个可选项变成一个增量计数结果，用来计算使用了多少次。
+    :param allow_from_autoenv: 如果开启的话，参数形式的值会从环境变量中获得，
+                               这种情况下，在语境上会定义一个前缀。
+    :param help: 帮助字符串。
+    :param hidden: 在帮助输出中隐藏这个可选项。
     """
     param_type_name = 'option'
 
@@ -1890,11 +1838,11 @@ class Option(Parameter):
 
 
 class Argument(Parameter):
-    """Arguments are positional parameters to a command.  They generally
-    provide fewer features than options but can have infinite ``nargs``
-    and are required by default.
+    """参数都是命令行中的位置参数形式。
+    通用中，参数要比可选项提供的特性要少，但参数可以设置无限 ``nargs`` 
+    不会抛出例外错误，而且默认都会使用。
 
-    All parameters are passed onwards to the parameter constructor.
+    所有参数都代入到参数形式构造器中。
     """
     param_type_name = 'argument'
 

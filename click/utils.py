@@ -165,51 +165,48 @@ class KeepOpenFile(object):
 
 
 def echo(message=None, file=None, nl=True, err=False, color=None):
-    """Prints a message plus a newline to the given file or stdout.  On
-    first sight, this looks like the print function, but it has improved
-    support for handling Unicode and binary data that does not fail no
-    matter how badly configured the system is.
+    """把一个消息带着一个新行字符输出到文件或标准输出上。
+    第一眼看起来像是一个输出函数，但 `echo` 已经提升为支持
+    处理 Unicode 和二进制数据，不管你的系统配置有多糟糕本
+    函数都不会失败。
 
-    Primarily it means that you can print binary data as well as Unicode
-    data on both 2.x and 3.x to the given file in the most appropriate way
-    possible.  This is a very carefree function in that it will try its
-    best to not fail.  As of Click 6.0 this includes support for unicode
-    output on the Windows console.
+    本函数的主要意义在于你可以在 Python 2 和 3 系版本上
+    即可以输出二进制数据，也可以输出 Unicode 数据到文件，
+    并以最合适的方法来实现。本函数是一个非常无忧函数，因为
+    会尽最大努力不让失败发生。作为 Click 6.0 版本已经包括
+    了 Unicode 输出在 Windows 系统终端上的支持。
 
-    In addition to that, if `colorama`_ is installed, the echo function will
-    also support clever handling of ANSI codes.  Essentially it will then
-    do the following:
+    另外，如果 `colorama`_ 色彩机制已经安装的话， `echo` 
+    函数也会支持对 ANSI 色彩代号的明智处理。如下是不可少的:
 
-    -   add transparent handling of ANSI color codes on Windows.
-    -   hide ANSI codes automatically if the destination file is not a
-        terminal.
+    -   在 Windows 系统上增加 ANSI 色彩代号的透明度处理。
+    -   如果目标文件不是一个终端的话，自动隐藏 ANSI 色彩代号。
 
     .. _colorama: https://pypi.org/project/colorama/
 
     .. versionchanged:: 6.0
-       As of Click 6.0 the echo function will properly support unicode
-       output on the windows console.  Not that click does not modify
-       the interpreter in any way which means that `sys.stdout` or the
-       print statement or function will still not provide unicode support.
+       作为 Click 6.0 版本中的 echo 函数会正确地支持 unicode 输出
+       到 Windows 系统终端上。注意 click 不会用任何一种方法
+       修改解释器，这意味着 `sys.stdout` 或 print 语句或函数
+       依然不会提供 unicode 数据支持。
 
     .. versionchanged:: 2.0
-       Starting with version 2.0 of Click, the echo function will work
-       with colorama if it's installed.
+       从 Click 2.0 版本开始， echo 函数会与 colorama 一起工作。
 
     .. versionadded:: 3.0
-       The `err` parameter was added.
+       其中增加了 `err` 参数形式。
 
     .. versionchanged:: 4.0
-       Added the `color` flag.
+       其中增加了 `color` 旗语。
 
-    :param message: the message to print
-    :param file: the file to write to (defaults to ``stdout``)
-    :param err: if set to true the file defaults to ``stderr`` instead of
-                ``stdout``.  This is faster and easier than calling
-                :func:`get_text_stderr` yourself.
-    :param nl: if set to `True` (the default) a newline is printed afterwards.
-    :param color: controls if the terminal supports ANSI colors or not.  The
-                  default is autodetection.
+    :param message: 要输出的消息
+    :param file: 要写入的文件 (默认值是 ``stdout``)
+    :param err: 如果设置成 `True` 的话， file 默认值是 ``stderr`` 
+                不再是 ``stdout`` 了。这要比你自己调用 
+                :func:`get_text_stderr` 函数性能更快，
+                用起来更容易。
+    :param nl: 如果设置成 `True` (即默认值) 在消息最后会有一个新行字符。
+    :param color: 控制终端是否支持 ANSI 色彩机制。默认是自动检测。
     """
     if file is None:
         if err:
@@ -262,14 +259,13 @@ def echo(message=None, file=None, nl=True, err=False, color=None):
 
 
 def get_binary_stream(name):
-    """Returns a system stream for byte processing.  This essentially
-    returns the stream from the sys module with the given name but it
-    solves some compatibility issues between different Python versions.
-    Primarily this function is necessary for getting binary streams on
-    Python 3.
+    """针对字节处理返回一种系统流数据。
+    这是不可缺少的，返回的流数据来自 sys 模块，使用给出的名字值，
+    但本函数解决了不同 Python 版本之间的一些兼容问题。本函数的
+    主要作用是在 Python 3 上获得二进制数据流。
 
-    :param name: the name of the stream to open.  Valid names are ``'stdin'``,
-                 ``'stdout'`` and ``'stderr'``
+    :param name: 要打开的流数据名字。合法的名字有 3 个:
+                 ``'stdin'`` 、 ``'stdout'`` 和 ``'stderr'``
     """
     opener = binary_streams.get(name)
     if opener is None:
@@ -278,15 +274,15 @@ def get_binary_stream(name):
 
 
 def get_text_stream(name, encoding=None, errors='strict'):
-    """Returns a system stream for text processing.  This usually returns
-    a wrapped stream around a binary stream returned from
-    :func:`get_binary_stream` but it also can take shortcuts on Python 3
-    for already correctly configured streams.
+    """针对文本处理返回一种系统流数据。
+    本函数常返回一个打包过的流数据，即把由 :func:`get_binary_stream`
+    函数返回的一种二进制流数据打包，但在 Python 3 上对于已经正确地配置
+    了流数据来说也是一种快捷函数。
 
-    :param name: the name of the stream to open.  Valid names are ``'stdin'``,
-                 ``'stdout'`` and ``'stderr'``
-    :param encoding: overrides the detected default encoding.
-    :param errors: overrides the default error mode.
+    :param name: 要打开的流数据名字。合法的名字有 3 个：
+                 ``'stdin'`` 、 ``'stdout'`` 和 ``'stderr'``
+    :param encoding: 覆写检测到的默认编码。
+    :param errors: 覆写默认的错误模式。
     """
     opener = text_streams.get(name)
     if opener is None:
@@ -296,27 +292,26 @@ def get_text_stream(name, encoding=None, errors='strict'):
 
 def open_file(filename, mode='r', encoding=None, errors='strict',
               lazy=False, atomic=False):
-    """This is similar to how the :class:`File` works but for manual
-    usage.  Files are opened non lazy by default.  This can open regular
-    files as well as stdin/stdout if ``'-'`` is passed.
+    """本函数类似 :class:`File` 类的工作，但手动来使用。
+    默认文件都是非懒蛋模式打开的。本函数可以把常规文件打开成
+    标准输入/标准输出，当然是以 ``'-'`` 作为文件名的时候。
 
-    If stdin/stdout is returned the stream is wrapped so that the context
-    manager will not close the stream accidentally.  This makes it possible
-    to always use the function like this without having to worry to
-    accidentally close a standard stream::
+    如果 stdin/stdout 被返回的话，流数据会被打包，
+    所以语境管理器不会让关闭流数据的意外发生。所以
+    本函数是确保标准流数据不会被意外关闭的保障。::
 
         with open_file(filename) as f:
             ...
 
     .. versionadded:: 3.0
 
-    :param filename: the name of the file to open (or ``'-'`` for stdin/stdout).
-    :param mode: the mode in which to open the file.
-    :param encoding: the encoding to use.
-    :param errors: the error handling for this file.
-    :param lazy: can be flipped to true to open the file lazily.
-    :param atomic: in atomic mode writes go into a temporary file and it's
-                   moved on close.
+    :param filename: 要打开的文件名 (或者用 ``'-'`` 来实现标准输入/标准输出)
+    :param mode: 打开文件时采用的模式。
+    :param encoding: 要使用的编码。
+    :param errors: 针对文件的错误处理模式。
+    :param lazy: 是否采用懒蛋模式打开文件。
+    :param atomic: 以原子价模式写文件会进入一个临时文件，
+                   并且直到文件关闭。
     """
     if lazy:
         return LazyFile(filename, mode, encoding, errors, atomic=atomic)
@@ -349,16 +344,15 @@ def get_os_args():
 
 
 def format_filename(filename, shorten=False):
-    """Formats a filename for user display.  The main purpose of this
-    function is to ensure that the filename can be displayed at all.  This
-    will decode the filename to unicode if necessary in a way that it will
-    not fail.  Optionally, it can shorten the filename to not include the
-    full path to the filename.
+    """为用户显示格式化一个文件名。
+    本函数的主要目的是确保文件名可以全部显示出来。
+    这会把文件名解码成 unicode 格式，否则会出现乱码。
+    另外可以显示文件名的短写形式，不包括完整路径部分。
 
-    :param filename: formats a filename for UI display.  This will also convert
-                     the filename into unicode without failing.
-    :param shorten: this optionally shortens the filename to strip of the
-                    path that leads up to it.
+    :param filename: 为用户显示的格式化一个文件名。也会把文件名转换成
+                     unicode 编码，不会失败。
+    :param shorten: 设置成 `True` 后会只提取文件名短写形式，
+                    完整路径部分会被剥离。
     """
     if shorten:
         filename = os.path.basename(filename)
@@ -366,11 +360,11 @@ def format_filename(filename, shorten=False):
 
 
 def get_app_dir(app_name, roaming=True, force_posix=False):
-    r"""Returns the config folder for the application.  The default behavior
-    is to return whatever is most appropriate for the operating system.
+    r"""返回应用程序的配置目录。
+    默认行为是针对操作系统返回最合适的应用程序所在文件夹。
 
-    To give you an idea, for an app called ``"Foo Bar"``, something like
-    the following folders could be returned:
+    给你一个思路，对于一个名叫 ``"Foo Bar"`` 应用程序来说，
+    针对不同操作系统可能会返回如下所在目录:
 
     Mac OS X:
       ``~/Library/Application Support/Foo Bar``
@@ -391,14 +385,13 @@ def get_app_dir(app_name, roaming=True, force_posix=False):
 
     .. versionadded:: 2.0
 
-    :param app_name: the application name.  This should be properly capitalized
-                     and can contain whitespace.
-    :param roaming: controls if the folder should be roaming or not on Windows.
-                    Has no affect otherwise.
-    :param force_posix: if this is set to `True` then on any POSIX system the
-                        folder will be stored in the home folder with a leading
-                        dot instead of the XDG config home or darwin's
-                        application support folder.
+    :param app_name: 应用程序的名字。这应该是合适的含有大写字母的名字，
+                     并且能包含空格字符。
+    :param roaming: 在 Windows 系统上控制文件夹是否被移动。
+                    其它操作系统上是无效的。
+    :param force_posix: 如果设置成 `True` 的话，在任何一款 POSIX 系统上，
+                        文件夹会存储在 home 目录下，并且目录名带着一个句号，
+                        相反 XDG 配置 home 或者 darwin 的应用程序所支持的目录。
     """
     if WIN:
         key = roaming and 'APPDATA' or 'LOCALAPPDATA'

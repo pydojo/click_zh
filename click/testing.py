@@ -71,7 +71,7 @@ def make_input_stream(input, charset):
 
 
 class Result(object):
-    """Holds the captured result of an invoked CLI script."""
+    """保留一个触发完的命令行脚本的捕获结果。"""
 
     def __init__(self, runner, stdout_bytes, stderr_bytes, exit_code,
                  exception, exc_info=None):
@@ -90,18 +90,18 @@ class Result(object):
 
     @property
     def output(self):
-        """The (standard) output as unicode string."""
+        """作为 unicode 字符串的 (标准) 输出。"""
         return self.stdout
 
     @property
     def stdout(self):
-        """The standard output as unicode string."""
+        """作为 unicode 字符串的标准输出。"""
         return self.stdout_bytes.decode(self.runner.charset, 'replace') \
             .replace('\r\n', '\n')
 
     @property
     def stderr(self):
-        """The standard error as unicode string."""
+        """作为 unicode 字符串的标准错误。"""
         if not self.stderr_bytes:
             raise ValueError("stderr not separately captured")
         return self.stderr_bytes.decode(self.runner.charset, 'replace') \
@@ -116,24 +116,21 @@ class Result(object):
 
 
 class CliRunner(object):
-    """The CLI runner provides functionality to invoke a Click command line
-    script for unittesting purposes in a isolated environment.  This only
-    works in single-threaded systems without any concurrency as it changes the
-    global interpreter state.
+    """命令行运行器提供了触发一个 Click 命令行脚本的功能。
+    针对单元测试目的而进入一个隔离环境。这个只工作在单个线程系统中，
+    不能有任何一个并发线程，因为会改变全局解释器的状态。
 
-    :param charset: the character set for the input and output data.  This is
-                    UTF-8 by default and should not be changed currently as
-                    the reporting to Click only works in Python 2 properly.
-    :param env: a dictionary with environment variables for overriding.
-    :param echo_stdin: if this is set to `True`, then reading from stdin writes
-                       to stdout.  This is useful for showing examples in
-                       some circumstances.  Note that regular prompts
-                       will automatically echo the input.
-    :param mix_stderr: if this is set to `False`, then stdout and stderr are
-                       preserved as independent streams.  This is useful for
-                       Unix-philosophy apps that have predictable stdout and
-                       noisy stderr, such that each may be measured
-                       independently
+    :param charset: 为输入和输出数据提供的字符集。默认是 UTF-8 字符集，
+                    并且目前不应该去改变这个字符集，因为这样才能在 Python 2
+                    中能够正确地做出报告内容。
+    :param env: 含有环境变量的一个字典，为了覆写用。
+    :param echo_stdin: 如果设置成 `True` 的话，从标准输入读取后写到标准输出上。
+                       在某些环境中为了显示示例时，这就有用了。注意常规提示会
+                       自动地回应输入。
+    :param mix_stderr: 如果设置成 `False` 的话，标准输出和标准错误都会被保护
+                       成独立的流数据。对于 Unix 类的应用来说这是有用的，因为
+                       Unix 类应用具有预先的标准输出，并且会对标准错误造成噪音，
+                       因此每个数据流都要独立进行测量。
     """
 
     def __init__(self, charset=None, env=None, echo_stdin=False,
@@ -146,14 +143,13 @@ class CliRunner(object):
         self.mix_stderr = mix_stderr
 
     def get_default_prog_name(self, cli):
-        """Given a command object it will return the default program name
-        for it.  The default is the `name` attribute or ``"root"`` if not
-        set.
+        """给出一个命令对象，本方法会返回命令的默认程序名。
+        如果没有设置程序名，默认值会是命令的 `name` 属性火 ``"root"`` 
         """
         return cli.name or 'root'
 
     def make_env(self, overrides=None):
-        """Returns the environment overrides for invoking a script."""
+        """为触发一个脚本返回环境覆写值。"""
         rv = dict(self.env)
         if overrides:
             rv.update(overrides)
@@ -161,21 +157,20 @@ class CliRunner(object):
 
     @contextlib.contextmanager
     def isolation(self, input=None, env=None, color=False):
-        """A context manager that sets up the isolation for invoking of a
-        command line tool.  This sets up stdin with the given input data
-        and `os.environ` with the overrides from the given dictionary.
-        This also rebinds some internals in Click to be mocked (like the
-        prompt functionality).
+        """一个语境管理器，为一个命令行工具的触发搭建一个隔离环境。
+        本函数建立的标准输入含有给出的输入数据和来自字典覆写的环境变量
+         `os.environ` 。本函数也把 Click 里的一些内部对象重新绑定
+        在一起执行 mock 测试 (例如提示功能)。
 
-        This is automatically done in the :meth:`invoke` method.
+        在 :meth:`invoke` 方法中本函数会自动完成。
 
         .. versionadded:: 4.0
-           The ``color`` parameter was added.
+           其中增加了 ``color`` 参数。
 
-        :param input: the input stream to put into sys.stdin.
-        :param env: the environment overrides as dictionary.
-        :param color: whether the output should contain color codes. The
-                      application can still override this explicitly.
+        :param input: 要放入 sys.stdin 中的输入数据流。
+        :param env: 要覆写环境变量的字典。
+        :param color: 其中输出内容是否应该包含颜色代号。
+                      应用程序依然可以明确地覆写这个效果。
         """
         input = make_input_stream(input, self.charset)
 
@@ -279,35 +274,30 @@ class CliRunner(object):
 
     def invoke(self, cli, args=None, input=None, env=None,
                catch_exceptions=True, color=False, mix_stderr=False, **extra):
-        """Invokes a command in an isolated environment.  The arguments are
-        forwarded directly to the command line script, the `extra` keyword
-        arguments are passed to the :meth:`~clickpkg.Command.main` function of
-        the command.
+        """在一个隔离环境中触发一个命令。
+        参数都直接提供给命令行脚本， `extra` 多关键字参数会被代入到
+        命令的 :meth:`~clickpkg.Command.main` 函数中。
 
-        This returns a :class:`Result` object.
+        本函数返回一个 :class:`Result` 类实例对象。
 
         .. versionadded:: 3.0
-           The ``catch_exceptions`` parameter was added.
+           其中增加了 ``catch_exceptions`` 参数。
 
         .. versionchanged:: 3.0
-           The result object now has an `exc_info` attribute with the
-           traceback if available.
+           结果对象现在有了一个 `exc_info` 属性，如果可用包含追踪信息。
 
         .. versionadded:: 4.0
-           The ``color`` parameter was added.
+           其中增加了 ``color`` 参数。
 
-        :param cli: the command to invoke
-        :param args: the arguments to invoke. It may be given as an iterable
-                     or a string. When given as string it will be interpreted
-                     as a Unix shell command. More details at
-                     :func:`shlex.split`.
-        :param input: the input data for `sys.stdin`.
-        :param env: the environment overrides.
-        :param catch_exceptions: Whether to catch any other exceptions than
-                                 ``SystemExit``.
-        :param extra: the keyword arguments to pass to :meth:`main`.
-        :param color: whether the output should contain color codes. The
-                      application can still override this explicitly.
+        :param cli: 要触发的命令。
+        :param args: 要触发的参数。可以作为一个可迭代对象或一个字符串。
+                     当提供的是字符串，会被翻译成一种 Unix 终端命令。
+                     更多细节在 :func:`shlex.split` 函数中。
+        :param input: 提供给 `sys.stdin` 的输入数据。
+        :param env: 覆写的环境变量。
+        :param catch_exceptions: 是否要捕获除了 ``SystemExit`` 以外的任何一个其它例外。
+        :param extra: 要传递给 :meth:`main` 方法的多关键字参数。
+        :param color: 是否要输出内容包含颜色代号。应用程序依然可以明确覆写这个效果。
         """
         exc_info = None
         with self.isolation(input=input, env=env, color=color) as outstreams:
@@ -358,8 +348,8 @@ class CliRunner(object):
 
     @contextlib.contextmanager
     def isolated_filesystem(self):
-        """A context manager that creates a temporary folder and changes
-        the current working directory to it for isolated filesystem tests.
+        """一个语境管理器，能建立一个临时文件夹后改变当前工作目录。
+        这是为了隔离的文件系统测试而使用。
         """
         cwd = os.getcwd()
         t = tempfile.mkdtemp()

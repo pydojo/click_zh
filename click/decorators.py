@@ -10,8 +10,7 @@ from .globals import get_current_context
 
 
 def pass_context(f):
-    """Marks a callback as wanting to receive the current context
-    object as first argument.
+    """把一个回调函数标记成想要接收当前语境对象作为第一参数。
     """
     def new_func(*args, **kwargs):
         return f(get_current_context(), *args, **kwargs)
@@ -19,9 +18,9 @@ def pass_context(f):
 
 
 def pass_obj(f):
-    """Similar to :func:`pass_context`, but only pass the object on the
-    context onwards (:attr:`Context.obj`).  This is useful if that object
-    represents the state of a nested system.
+    """类似 :func:`pass_context` 函数，
+    但只在语境上继续传递对象 (:attr:`Context.obj`) 属性。
+    如果对象呈现一个嵌入式系统的状态的话，这个函数就有用了。
     """
     def new_func(*args, **kwargs):
         return f(get_current_context().obj, *args, **kwargs)
@@ -29,12 +28,12 @@ def pass_obj(f):
 
 
 def make_pass_decorator(object_type, ensure=False):
-    """Given an object type this creates a decorator that will work
-    similar to :func:`pass_obj` but instead of passing the object of the
-    current context, it will find the innermost context of type
-    :func:`object_type`.
+    """根据一个对象类型建立一个装饰器，
+    装饰器工作类似 :func:`pass_obj` 函数，
+    但不传递当前语境对象，它会找到 :func:`object_type` 函数
+    类型的最内部的语境。
 
-    This generates a decorator that works roughly like this::
+    本函数生成的一个装饰器工作起来像下面一样::
 
         from functools import update_wrapper
 
@@ -46,9 +45,9 @@ def make_pass_decorator(object_type, ensure=False):
             return update_wrapper(new_func, f)
         return decorator
 
-    :param object_type: the type of the object to pass.
-    :param ensure: if set to `True`, a new object will be created and
-                   remembered on the context if it's not there yet.
+    :param object_type: 要传递的对象类型。
+    :param ensure: 如果设置成 `True` 的话，一个新对象会被建立，
+                   并且在语境中会被记住，反之否然。
     """
     def decorator(f):
         def new_func(*args, **kwargs):
@@ -90,24 +89,20 @@ def _make_command(f, name, attrs, cls):
 
 
 def command(name=None, cls=None, **attrs):
-    r"""Creates a new :class:`Command` and uses the decorated function as
-    callback.  This will also automatically attach all decorated
-    :func:`option`\s and :func:`argument`\s as parameters to the command.
+    r"""建立一个新的 :class:`Command` 类并且把装饰的函数作为回调函数使用。
+    本装饰器函数也会自动地把所有装饰的 :func:`option` 和 :func:`argument`
+    附着成参数形式给命令。
 
-    The name of the command defaults to the name of the function.  If you
-    want to change that, you can pass the intended name as the first
-    argument.
+    命令名默认为函数名。如果你要改变名字，你可以把名字作为第一参数值。
 
-    All keyword arguments are forwarded to the underlying command class.
+    所有关键字参数都是指命令类中的参数。
 
-    Once decorated the function turns into a :class:`Command` instance
-    that can be invoked as a command line utility or be attached to a
-    command :class:`Group`.
+    一旦装饰的函数变成一个 :class:`Command` 类的实例，
+    就可以被触发成一个命令行工具，或者成为一个命令群组
+     :class:`Group` 类中的一个子命令。
 
-    :param name: the name of the command.  This defaults to the function
-                 name with underscores replaced by dashes.
-    :param cls: the command class to instantiate.  This defaults to
-                :class:`Command`.
+    :param name: 命令的名字。默认是把函数名中的下划线换成减号。
+    :param cls: 要实例化的命令类。默认值是 :class:`Command` 类。
     """
     if cls is None:
         cls = Command
@@ -119,9 +114,9 @@ def command(name=None, cls=None, **attrs):
 
 
 def group(name=None, **attrs):
-    """Creates a new :class:`Group` with a function as callback.  This
-    works otherwise the same as :func:`command` just that the `cls`
-    parameter is set to :class:`Group`.
+    """建立一个新的 :class:`Group` 类所含的一个函数作为回调函数。
+    本函数工作起来与 :func:`command` 类似，就是把 `cls` 参数形式
+    设置成 :class:`Group` 类了。
     """
     attrs.setdefault('cls', Group)
     return command(name, **attrs)
@@ -137,14 +132,13 @@ def _param_memo(f, param):
 
 
 def argument(*param_decls, **attrs):
-    """Attaches an argument to the command.  All positional arguments are
-    passed as parameter declarations to :class:`Argument`; all keyword
-    arguments are forwarded unchanged (except ``cls``).
-    This is equivalent to creating an :class:`Argument` instance manually
-    and attaching it to the :attr:`Command.params` list.
+    """把一个参数提供给命令。
+    所有位置参数都代入成参数声明形式，提供给 :class:`Argument` 类；
+    所有关键字参数都直接不变 (除了 ``cls``) 。
+    本函数等价于手动建立了一个 :class:`Argument` 类的实例，
+    并且把实例提供给 :attr:`Command.params` 属性列表。
 
-    :param cls: the argument class to instantiate.  This defaults to
-                :class:`Argument`.
+    :param cls: 要实例化的参数类。默认值是 :class:`Argument` 类。
     """
     def decorator(f):
         ArgumentClass = attrs.pop('cls', Argument)
@@ -154,14 +148,13 @@ def argument(*param_decls, **attrs):
 
 
 def option(*param_decls, **attrs):
-    """Attaches an option to the command.  All positional arguments are
-    passed as parameter declarations to :class:`Option`; all keyword
-    arguments are forwarded unchanged (except ``cls``).
-    This is equivalent to creating an :class:`Option` instance manually
-    and attaching it to the :attr:`Command.params` list.
+    """把一个可选项提供给命令。
+    所有位置参数都代入成参数声明形式，提供给 :class:`Option` 类；
+    所有关键字参数都直接不变 (除了 ``cls``) 。
+    本函数等价于手动建立了一个 :class:`Option` 类的实例，
+    并且把实例提供给 :attr:`Command.params` 属性列表。
 
-    :param cls: the option class to instantiate.  This defaults to
-                :class:`Option`.
+    :param cls: 要实例化的选项类。默认值是 :class:`Option` 类。
     """
     def decorator(f):
         # Issue 926, copy attrs, so pre-defined options can re-use the same cls=
@@ -176,11 +169,11 @@ def option(*param_decls, **attrs):
 
 
 def confirmation_option(*param_decls, **attrs):
-    """Shortcut for confirmation prompts that can be ignored by passing
-    ``--yes`` as parameter.
+    """确认提示的快捷功能。
+    确认提示可以通过使用 ``--yes`` 作为参数形式被忽略掉。
 
-    This is equivalent to decorating a function with :func:`option` with
-    the following parameters::
+    等价于使用 :func:`option` 函数装饰一个函数，
+    使用如下参数形式::
 
         def callback(ctx, param, value):
             if not value:
@@ -206,10 +199,10 @@ def confirmation_option(*param_decls, **attrs):
 
 
 def password_option(*param_decls, **attrs):
-    """Shortcut for password prompts.
+    """密码提示的快捷功能。
 
-    This is equivalent to decorating a function with :func:`option` with
-    the following parameters::
+    等价于用 :func:`option` 函数装饰了一个函数，
+    使用如下参数形式::
 
         @click.command()
         @click.option('--password', prompt=True, confirmation_prompt=True,
@@ -226,16 +219,16 @@ def password_option(*param_decls, **attrs):
 
 
 def version_option(version=None, *param_decls, **attrs):
-    """Adds a ``--version`` option which immediately ends the program
-    printing out the version number.  This is implemented as an eager
-    option that prints the version and exits the program in the callback.
+    """增加一项 ``--version`` 选项。
+    该选项立即结束于程序输出版本号。本函数实现成一种期望可选项，
+    期望可选项输出版本信息后在回调中退出程序。
 
-    :param version: the version number to show.  If not provided Click
-                    attempts an auto discovery via setuptools.
-    :param prog_name: the name of the program (defaults to autodetection)
-    :param message: custom message to show instead of the default
+    :param version: 要显示的版本号。如果没有提供，Click 会通过
+                    setuptools 库来自动发现一个。
+    :param prog_name: 程序的名字 (默认是自动检测)
+    :param message: 显示自定义消息，反而不显示默认的
                     (``'%(prog)s, version %(version)s'``)
-    :param others: everything else is forwarded to :func:`option`.
+    :param others: 其它的直接提供给 :func:`option` 函数。
     """
     if version is None:
         if hasattr(sys, '_getframe'):
@@ -284,14 +277,15 @@ def version_option(version=None, *param_decls, **attrs):
 
 
 def help_option(*param_decls, **attrs):
-    """Adds a ``--help`` option which immediately ends the program
-    printing out the help page.  This is usually unnecessary to add as
-    this is added by default to all commands unless suppressed.
+    """增加一个 ``--help`` 选项。
+    该选项立即结束于程序输出帮助页面内容。
+    常常不需要增加，因为默认会增加给所有的命令，
+    除非你要实现压制作用。
 
-    Like :func:`version_option`, this is implemented as eager option that
-    prints in the callback and exits.
+    像 :func:`version_option` 函数一样，
+    本函数实现成一个期望可选项，在回调中输出后退出程序。
 
-    All arguments are forwarded to :func:`option`.
+    所有参数都直接提供给 :func:`option` 函数。
     """
     def decorator(f):
         def callback(ctx, param, value):

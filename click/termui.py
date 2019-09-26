@@ -55,39 +55,38 @@ def _build_prompt(text, suffix, show_default=False, default=None, show_choices=T
 def prompt(text, default=None, hide_input=False, confirmation_prompt=False,
            type=None, value_proc=None, prompt_suffix=': ', show_default=True,
            err=False, show_choices=True):
-    """Prompts a user for input.  This is a convenience function that can
-    be used to prompt a user for input later.
+    """提示一名用户输入。
+    这是一种便利函数，它可以用来给一名用户提供输入提示功能。
 
-    If the user aborts the input by sending a interrupt signal, this
-    function will catch it and raise a :exc:`Abort` exception.
+    如果用户用一个打断信号终止输入提示的话，本函数会捕获打断信号后
+    抛出一个 :exc:`Abort` 例外错误。
 
     .. versionadded:: 7.0
-       Added the show_choices parameter.
+       其中增加了 show_choices 参数形式。
 
     .. versionadded:: 6.0
-       Added unicode support for cmd.exe on Windows.
+       为 Windows 系统上的 cmd.exe 增加了 unicode 数据支持。
 
     .. versionadded:: 4.0
-       Added the `err` parameter.
+       其中增加了 `err` 参数形式。
 
-    :param text: the text to show for the prompt.
-    :param default: the default value to use if no input happens.  If this
-                    is not given it will prompt until it's aborted.
-    :param hide_input: if this is set to true then the input value will
-                       be hidden.
-    :param confirmation_prompt: asks for confirmation for the value.
-    :param type: the type to use to check the value against.
-    :param value_proc: if this parameter is provided it's a function that
-                       is invoked instead of the type conversion to
-                       convert a value.
-    :param prompt_suffix: a suffix that should be added to the prompt.
-    :param show_default: shows or hides the default value in the prompt.
-    :param err: if set to true the file defaults to ``stderr`` instead of
-                ``stdout``, the same as with echo.
-    :param show_choices: Show or hide choices if the passed type is a Choice.
-                         For example if type is a Choice of either day or week,
-                         show_choices is true and text is "Group by" then the
-                         prompt will be "Group by (day, week): ".
+    :param text: 为提示而显示的文字内容。
+    :param default: 如果没有输出发生时所使用的默认值。
+                    如果不提供这个参数值的话，会一直
+                    出现提示，直到终止提示。
+    :param hide_input: 如果设置成 `True` 的话，输入的值会被隐藏显示。
+    :param confirmation_prompt: 确认再输入一次提示值。
+    :param type: 检查提示值的数据类型。
+    :param value_proc: 如果提供这个参数的话，参数值是一个函数名，会用来
+                       代替类型转换函数对提示值进行类型转换。
+    :param prompt_suffix: 提示内容的最后一个符号。
+    :param show_default: 在提示文字中是否显示默认值。
+    :param err: 如果设置成 `True` 文件默认是 ``stderr`` 标准错误，
+                而不再是 ``stdout`` 了，与 echo 效果一样。
+    :param show_choices: 如果 type 参数值是 Choice 类的话，是否显示候选清单。
+                         例如如果 type 参数值是一个 Choice 类的 day 或 week
+                         选择的话，show_choices 参数设置成 `True` 后提示文字
+                         中的 "Group by" 会变成 "Group by (day, week): "
     """
     result = None
 
@@ -140,22 +139,22 @@ def prompt(text, default=None, hide_input=False, confirmation_prompt=False,
 
 def confirm(text, default=False, abort=False, prompt_suffix=': ',
             show_default=True, err=False):
-    """Prompts for confirmation (yes/no question).
+    """为确认提供提示输入 (属于 yes/no 问题类型)。
 
-    If the user aborts the input by sending a interrupt signal this
-    function will catch it and raise a :exc:`Abort` exception.
+    如果用户通过打断信号终止输入，
+    本函数会捕获打断信号后抛出一个 :exc:`Abort` 例外错误。
 
     .. versionadded:: 4.0
-       Added the `err` parameter.
+       其中增加了 `err` 参数形式。
 
-    :param text: the question to ask.
-    :param default: the default for the prompt.
-    :param abort: if this is set to `True` a negative answer aborts the
-                  exception by raising :exc:`Abort`.
-    :param prompt_suffix: a suffix that should be added to the prompt.
-    :param show_default: shows or hides the default value in the prompt.
-    :param err: if set to true the file defaults to ``stderr`` instead of
-                ``stdout``, the same as with echo.
+    :param text: 提示文字。
+    :param default: 提示的默认值。
+    :param abort: 如果设置成 `True` 一个否定结果会终止提示，
+                  是通过抛出 :exc:`Abort` 例外错误实现的。
+    :param prompt_suffix: 提示文字的后缀内容。
+    :param show_default: 是否在提示中显示默认值。
+    :param err: 如果设置成 `True` 文件默认为 ``stderr`` 
+                而不再是 ``stdout`` 了，与 echo 效果一样。
     """
     prompt = _build_prompt(text, prompt_suffix, show_default,
                            default and 'Y/n' or 'y/N')
@@ -183,8 +182,8 @@ def confirm(text, default=False, abort=False, prompt_suffix=': ',
 
 
 def get_terminal_size():
-    """Returns the current size of the terminal as tuple in the form
-    ``(width, height)`` in columns and rows.
+    """返回当前终端的尺寸。
+    返回值是元组形式 ``(width, height)`` 对应着列数与行数。
     """
     # If shutil has get_terminal_size() (Python 3.3 and later) use that
     if sys.version_info >= (3, 3):
@@ -230,16 +229,14 @@ def get_terminal_size():
 
 
 def echo_via_pager(text_or_generator, color=None):
-    """This function takes a text and shows it via an environment specific
-    pager on stdout.
+    """本函数得到一个文本内容后显示成一页一页的形式在标准输出上。
 
     .. versionchanged:: 3.0
-       Added the `color` flag.
+       其中增加了 `color` 旗语。
 
-    :param text_or_generator: the text to page, or alternatively, a
-                              generator emitting the text to page.
-    :param color: controls if the pager supports ANSI colors or not.  The
-                  default is autodetection.
+    :param text_or_generator: 显示到单页上的文字，或用一个
+                              生成器对象来产生单页所需的文字。
+    :param color: 控制页面是否支持 ANSI 色彩机制。默认是自动检测。
     """
     color = resolve_color_default(color)
 
@@ -263,49 +260,41 @@ def progressbar(iterable=None, length=None, label=None, show_eta=True,
                 item_show_func=None, fill_char='#', empty_char='-',
                 bar_template='%(label)s  [%(bar)s]  %(info)s',
                 info_sep='  ', width=36, file=None, color=None):
-    """This function creates an iterable context manager that can be used
-    to iterate over something while showing a progress bar.  It will
-    either iterate over the `iterable` or `length` items (that are counted
-    up).  While iteration happens, this function will print a rendered
-    progress bar to the given `file` (defaults to stdout) and will attempt
-    to calculate remaining time and more.  By default, this progress bar
-    will not be rendered if the file is not a terminal.
+    """本函数建立了一个可迭代对象语境管理器。
+    语境管理器可以用来迭代某些对象的同时显示一个进度条。
+    本函数即可以迭代 `iterable` 参数值，也可以迭代 `length` 参数值
+     (都是可以进行数算的对象)。当迭代发生时，本函数会输出一个渲染过的
+    进度条到给出的 `file` 文件上(默认是标准输出) ，并且会去计算剩余
+    时间等事情。默认情况下，如果文件不是一个终端的话，这个进度条不会被渲染。
 
-    The context manager creates the progress bar.  When the context
-    manager is entered the progress bar is already created.  With every
-    iteration over the progress bar, the iterable passed to the bar is
-    advanced and the bar is updated.  When the context manager exits,
-    a newline is printed and the progress bar is finalized on screen.
+    语境管理器建立了进度条。当进入语境管理器时，进度条就建立完成了。进度条
+    上的每次迭代，让可迭代对象优先进入进度条并更新进度条。当退出语境管理器
+    的时候，会输出一个新行字符，并且进度条也会在屏幕上结束进度。
 
-    Note: The progress bar is currently designed for use cases where the
-    total progress can be expected to take at least several seconds.
-    Because of this, the ProgressBar class object won't display
-    progress that is considered too fast, and progress where the time
-    between steps is less than a second.
+    注意: 进度条目前所设计的使用情景是，总体进度至少要在许多秒以上。
+    由于这个设计， ProgressBar 类对象不会显示执行太快的进度，并且
+    不会显示步骤之间所耗时间小于 1 秒的进度。
 
-    No printing must happen or the progress bar will be unintentionally
-    destroyed.
+    没有进度条输出一定会发生，或者进度条会无意中被销毁。
 
-    Example usage::
+    示例用法::
 
         with progressbar(items) as bar:
             for item in bar:
                 do_something_with(item)
 
-    Alternatively, if no iterable is specified, one can manually update the
-    progress bar through the `update()` method instead of directly
-    iterating over the progress bar.  The update method accepts the number
-    of steps to increment the bar with::
+    另一种没有可迭代对象的用法，一种可以手动更新进度条的方法，通过
+     `update()` 方法实现，而不是直接在进度条上进行迭代。这个更新
+    方法接收步骤数来增加进度条进展::
 
         with progressbar(length=chunks.total_bytes) as bar:
             for chunk in chunks:
                 process_chunk(chunk)
                 bar.update(chunks.bytes)
 
-    The ``update()`` method also takes an optional value specifying the
-    ``current_item`` at the new position. This is useful when used
-    together with ``item_show_func`` to customize the output for each
-    manual step::
+    其中 ``update()`` 方法也有一个可选参数值，描述在 ``current_item`` 
+    新位置上。当与 ``item_show_func`` 一起使用时是有用的，因为要自定义
+    每个手动步骤的输出::
 
         with click.progressbar(
             length=total_size,
@@ -319,47 +308,32 @@ def progressbar(iterable=None, length=None, label=None, show_eta=True,
     .. versionadded:: 2.0
 
     .. versionadded:: 4.0
-       Added the `color` parameter.  Added a `update` method to the
-       progressbar object.
+       其中增加了 `color` 参数形式。把一个 `update` 方法增加给了进度条对象。
 
-    :param iterable: an iterable to iterate over.  If not provided the length
-                     is required.
-    :param length: the number of items to iterate over.  By default the
-                   progressbar will attempt to ask the iterator about its
-                   length, which might or might not work.  If an iterable is
-                   also provided this parameter can be used to override the
-                   length.  If an iterable is not provided the progress bar
-                   will iterate over a range of that length.
-    :param label: the label to show next to the progress bar.
-    :param show_eta: enables or disables the estimated time display.  This is
-                     automatically disabled if the length cannot be
-                     determined.
-    :param show_percent: enables or disables the percentage display.  The
-                         default is `True` if the iterable has a length or
-                         `False` if not.
-    :param show_pos: enables or disables the absolute position display.  The
-                     default is `False`.
-    :param item_show_func: a function called with the current item which
-                           can return a string to show the current item
-                           next to the progress bar.  Note that the current
-                           item can be `None`!
-    :param fill_char: the character to use to show the filled part of the
-                      progress bar.
-    :param empty_char: the character to use to show the non-filled part of
-                       the progress bar.
-    :param bar_template: the format string to use as template for the bar.
-                         The parameters in it are ``label`` for the label,
-                         ``bar`` for the progress bar and ``info`` for the
-                         info section.
-    :param info_sep: the separator between multiple info items (eta etc.)
-    :param width: the width of the progress bar in characters, 0 means full
-                  terminal width
-    :param file: the file to write to.  If this is not a terminal then
-                 only the label is printed.
-    :param color: controls if the terminal supports ANSI colors or not.  The
-                  default is autodetection.  This is only needed if ANSI
-                  codes are included anywhere in the progress bar output
-                  which is not the case by default.
+    :param iterable: 一个可迭代对象。如果不提供这个参数值，就要用长度参数。
+    :param length: 迭代对象中每项元素的数量。默认情况进度条会得到迭代器对象
+                   的长度值，也许会失效。如果提供这个参数值的话，会用来覆写
+                   长度值。如果没有提供的话，进度条会对可迭代对象的长度进行
+                   迭代。
+    :param label: 显示进度条的标签信息。
+    :param show_eta: 开启和禁用显示估算时间。如果长度值无法确定会自动禁用。
+    :param show_percent: 开启或禁用显示百分比信息。如果迭代对象长度值大于0
+                         的话，默认值是 `True` ，否则是 `False` 
+    :param show_pos: 开启或禁用绝对位置显示。默认值是 `False`
+    :param item_show_func: 一个使用当前迭代项的函数，可以返回成一个字符串显示
+                           在终端里，最后显示进度条。注意当前项可以是 `None`
+    :param fill_char: 显示在进度条里的字符。
+    :param empty_char: 进度条中物填充部分的字符。
+    :param bar_template: 进度条使用的格式化字符串模版。模版中的参数有：
+                         ``label`` 进度条标签，``bar`` 进度条样式，
+                         ``info`` 进度条信息部分。
+    :param info_sep: 多个信息项之间的分隔字符
+                     (例如剩余时间、百分比、绝对位置之间的间隔符号)
+    :param width: 进度条信息部分的宽度，单位是字符，值为 0 意思是终端的宽度。
+    :param file: 要写入的文件。如果不是一个终端的话，只会输出标签。
+    :param color: 如果终端支持 ANSI 色彩就可控，否则不行。
+                  默认是自动检测的。如果 ANSI 色彩代号包含在进度条输出中，
+                  就需要这个参数值，默认不提供这个环境。
     """
     from ._termui_impl import ProgressBar
     color = resolve_color_default(color)
@@ -372,9 +346,9 @@ def progressbar(iterable=None, length=None, label=None, show_eta=True,
 
 
 def clear():
-    """Clears the terminal screen.  This will have the effect of clearing
-    the whole visible space of the terminal and moving the cursor to the
-    top left.  This does not do anything if not connected to a terminal.
+    """对终端执行清屏效果。
+    本函数会清楚终端的整个可视区域，然后把光标移动到左上角。
+    如果没有连接一个终端的话，本函数不做任何事情。
 
     .. versionadded:: 2.0
     """
@@ -391,18 +365,17 @@ def clear():
 
 def style(text, fg=None, bg=None, bold=None, dim=None, underline=None,
           blink=None, reverse=None, reset=True):
-    """Styles a text with ANSI styles and returns the new string.  By
-    default the styling is self contained which means that at the end
-    of the string a reset code is issued.  This can be prevented by
-    passing ``reset=False``.
+    """用 ANSI 色彩来给文本着色后返回新颜色的字符串。
+    默认是终端自身所含的颜色风格，在字符串最后会有一个重置代码。
+    这样可以防止代入 ``reset=False`` 这个参数值。
 
-    Examples::
+    示例::
 
         click.echo(click.style('Hello World!', fg='green'))
         click.echo(click.style('ATTENTION!', blink=True))
         click.echo(click.style('Some things', reverse=True, fg='cyan'))
 
-    Supported color names:
+    所支持的颜色名字:
 
     * ``black`` (might be a gray)
     * ``red``
@@ -425,22 +398,19 @@ def style(text, fg=None, bg=None, bold=None, dim=None, underline=None,
     .. versionadded:: 2.0
 
     .. versionadded:: 7.0
-       Added support for bright colors.
+       其中增加了亮色系列。
 
-    :param text: the string to style with ansi codes.
-    :param fg: if provided this will become the foreground color.
-    :param bg: if provided this will become the background color.
-    :param bold: if provided this will enable or disable bold mode.
-    :param dim: if provided this will enable or disable dim mode.  This is
-                badly supported.
-    :param underline: if provided this will enable or disable underline.
-    :param blink: if provided this will enable or disable blinking.
-    :param reverse: if provided this will enable or disable inverse
-                    rendering (foreground becomes background and the
-                    other way round).
-    :param reset: by default a reset-all code is added at the end of the
-                  string which means that styles do not carry over.  This
-                  can be disabled to compose styles.
+    :param text: 用 ansi 代号来着色的文字。
+    :param fg: 如果提供改变文字的颜色，即前景色。
+    :param bg: 如果提供改变终端底色，即背景色。
+    :param bold: 是否开启粗体模式。
+    :param dim: 是否开启深浅模式。这个效果并不好。
+    :param underline: 是否开启下划线。
+    :param blink: 是否开启闪烁效果。
+    :param reverse: 是否开启反转渲染。
+                    (前景色与背景色互换)
+    :param reset: 默认重置所有风格效果，这样不会破坏终端设置。
+                  这也可以被禁用来改变终端风格。
     """
     bits = []
     if fg:
@@ -470,26 +440,25 @@ def style(text, fg=None, bg=None, bold=None, dim=None, underline=None,
 
 
 def unstyle(text):
-    """Removes ANSI styling information from a string.  Usually it's not
-    necessary to use this function as Click's echo function will
-    automatically remove styling if necessary.
+    """移除文字上的 ANSI 风格信息。
+    通常不需要使用这个函数，因为 Click 的 echo 函数会自动
+    根据需要移除颜色风格。
 
     .. versionadded:: 2.0
 
-    :param text: the text to remove style information from.
+    :param text: 移除颜色风格的文字。
     """
     return strip_ansi(text)
 
 
 def secho(message=None, file=None, nl=True, err=False, color=None, **styles):
-    """This function combines :func:`echo` and :func:`style` into one
-    call.  As such the following two calls are the same::
+    """本函数组合了 :func:`echo` 函数和 :func:`style` 函数调用。
+    所以等价于如下两次调用效果::
 
         click.secho('Hello World!', fg='green')
         click.echo(click.style('Hello World!', fg='green'))
 
-    All keyword arguments are forwarded to the underlying functions
-    depending on which one they go with.
+    所有关键字参数都是来自被组合的两个函数。
 
     .. versionadded:: 2.0
     """
@@ -500,32 +469,32 @@ def secho(message=None, file=None, nl=True, err=False, color=None, **styles):
 
 def edit(text=None, editor=None, env=None, require_save=True,
          extension='.txt', filename=None):
-    r"""Edits the given text in the defined editor.  If an editor is given
-    (should be the full path to the executable but the regular operating
-    system search path is used for finding the executable) it overrides
-    the detected editor.  Optionally, some environment variables can be
-    used.  If the editor is closed without changes, `None` is returned.  In
-    case a file is edited directly the return value is always `None` and
-    `require_save` and `extension` are ignored.
+    r"""在定义完的文本编辑器中来输入文字。
+    如果给出一个文本编辑器的话，
+    (应该使用完整路径指向可执行文本编辑器程序，
+    但常规操作系统会搜索默认使用的文本编辑器) 
+    会覆写自动检测到的文本编辑器。另外，有些
+    环境变量是可以使用的。如果编辑器没有执行
+    保存操作就关闭的话，返回的内容是 `None` 
+    值。在这种情况下，一定要执行保存操作，并且
+    会忽略 `require_save` 和 `extension` 
+    参数的设置。
 
-    If the editor cannot be opened a :exc:`UsageError` is raised.
+    如果文本编辑器不能打开，会抛出一个 :exc:`UsageError` 例外错误。
 
-    Note for Windows: to simplify cross-platform usage, the newlines are
-    automatically converted from POSIX to Windows and vice versa.  As such,
-    the message here will have ``\n`` as newline markers.
+    注意 Windows 系统: 为了简化跨平台使用，新行字符都自动地从  POSIX 
+    系统转换成 Windows 系统用的字符，并且反之亦然。因此这里依然会有
+     ``\n`` 作为新行字符作标记用。
 
-    :param text: the text to edit.
-    :param editor: optionally the editor to use.  Defaults to automatic
-                   detection.
-    :param env: environment variables to forward to the editor.
-    :param require_save: if this is true, then not saving in the editor
-                         will make the return value become `None`.
-    :param extension: the extension to tell the editor about.  This defaults
-                      to `.txt` but changing this might change syntax
-                      highlighting.
-    :param filename: if provided it will edit this file instead of the
-                     provided text contents.  It will not use a temporary
-                     file as an indirection in that case.
+    :param text: 提前写入文本编辑器中的文字。
+    :param editor: 选择文本编辑器程序。默认自动检测可用的默认文本编辑器。
+    :param env: 直接提供给文本编辑器的环境变量。
+    :param require_save: 如果设置成 `True` 的话，在文本编辑器中不执行
+                         保存操作也会返回 `None` 值。
+    :param extension: 告诉文本编辑器文件的扩展名是什么。
+                      默认值是 `.txt` ，但改变这个可以改变句法高亮的效果。
+    :param filename: 如果提供文件名的话，编辑器打开这个文件。
+                     编辑器不再使用临时文件作为间接存储目标了。
     """
     from ._termui_impl import Editor
     editor = Editor(editor=editor, env=env, require_save=require_save,
@@ -536,26 +505,22 @@ def edit(text=None, editor=None, env=None, require_save=True,
 
 
 def launch(url, wait=False, locate=False):
-    """This function launches the given URL (or filename) in the default
-    viewer application for this file type.  If this is an executable, it
-    might launch the executable in a new session.  The return value is
-    the exit code of the launched application.  Usually, ``0`` indicates
-    success.
+    """本函数启动给出的 URL (或文件名) 默认应用程序。
+    如果这是一个可执行程序的话，可能在新会话中打开程序。
+    返回值是启动的应用程序的退出代号。常常指 ``0`` 说的。
 
-    Examples::
+    示例::
 
         click.launch('https://click.palletsprojects.com/')
         click.launch('/my/downloaded/file', locate=True)
 
     .. versionadded:: 2.0
 
-    :param url: URL or filename of the thing to launch.
-    :param wait: waits for the program to stop.
-    :param locate: if this is set to `True` then instead of launching the
-                   application associated with the URL it will attempt to
-                   launch a file manager with the file located.  This
-                   might have weird effects if the URL does not point to
-                   the filesystem.
+    :param url: 要加载的一个 URL 或文件名。
+    :param wait: 等待程序结束。
+    :param locate: 如果设置成 `True` 的话，打开的不是与 URL 相关的应用程序，
+                   而是打开一个文件管理器指向文件所在位置。如果 URL 没有指向
+                   文件系统的话，也许会有奇怪的效果。
     """
     from ._termui_impl import open_url
     return open_url(url, wait=wait, locate=locate)
@@ -567,24 +532,24 @@ _getchar = None
 
 
 def getchar(echo=False):
-    """Fetches a single character from the terminal and returns it.  This
-    will always return a unicode character and under certain rare
-    circumstances this might return more than one character.  The
-    situations which more than one character is returned is when for
-    whatever reason multiple characters end up in the terminal buffer or
-    standard input was not actually a terminal.
+    """获得从终端输入的单个字符后返回该字符。
+    本函数一直会返回一个 unicode 字符，并且
+    在某些语言环境下返回的是多个字符。中文里的
+    一个字就是一种多字符组成形式。对于多字符
+    组成字会结束在终端缓存中，而标准输入实际上
+    不是一个终端。
 
-    Note that this will always read from the terminal, even if something
-    is piped into the standard input.
+    注意本函数会一直从终端读取，即使使用管道技术
+    连接到标准输入也是如此读取方式。
 
-    Note for Windows: in rare cases when typing non-ASCII characters, this
-    function might wait for a second character and then return both at once.
-    This is because certain Unicode characters look like special-key markers.
+    注意 Windows 系统: 在很少的情况下，当输入非ASCII 字符时，
+    本函数会等待下一个字符的输入，然后一次性返回输入结果。
+    这是因为某些 Unicode 字符看起来像特殊的键盘输入方法。
 
     .. versionadded:: 2.0
 
-    :param echo: if set to `True`, the character read will also show up on
-                 the terminal.  The default is to not show it.
+    :param echo: 如果设置成 `True` 的话，字符读取后也会显示在终端里。
+                 默认是不做这种输出到终端的设置。
     """
     f = _getchar
     if f is None:
@@ -598,19 +563,18 @@ def raw_terminal():
 
 
 def pause(info='Press any key to continue ...', err=False):
-    """This command stops execution and waits for the user to press any
-    key to continue.  This is similar to the Windows batch "pause"
-    command.  If the program is not run through a terminal, this command
-    will instead do nothing.
+    """本函数会暂停执行，并等待用户按下一个按键。
+    这类似 Windows 系统的批处理 "pause" 命令。
+    如果程序没有通过一个终端来运行的话，本函数什么也不会做。
 
     .. versionadded:: 2.0
 
     .. versionadded:: 4.0
-       Added the `err` parameter.
+       其中增加了 `err` 参数。
 
-    :param info: the info string to print before pausing.
-    :param err: if set to message goes to ``stderr`` instead of
-                ``stdout``, the same as with echo.
+    :param info: 显示暂停的提示消息。
+    :param err: 如果设置消息到 ``stderr`` 的话，
+                即没输出到 ``stdout`` ，那么与 echo 效果一样。
     """
     if not isatty(sys.stdin) or not isatty(sys.stdout):
         return

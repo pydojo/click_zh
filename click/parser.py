@@ -195,17 +195,14 @@ class ParsingState(object):
 
 
 class OptionParser(object):
-    """The option parser is an internal class that is ultimately used to
-    parse options and arguments.  It's modelled after optparse and brings
-    a similar but vastly simplified API.  It should generally not be used
-    directly as the high level Click classes wrap it for you.
+    """可选项语法分析器是一个内部类，最终用来对可选项和参数进行语法分析。
+    这是 optparse 之后完成模型化，并且带有类似但极大简化过的 API 接口。
+    通用中，应该不要直接使用，因为是为你打包的一种高级别 Click 类。
 
-    It's not nearly as extensible as optparse or argparse as it does not
-    implement features that are implemented on a higher level (such as
-    types or defaults).
+    几乎与 optparse 或 argparse 库一样不可扩展，因为没有在更高层实现
+    许多特性 (如同类型或默认类一样，都是基类）。
 
-    :param ctx: optionally the :class:`~click.Context` where this parser
-                should go with.
+    :param ctx: 能够与 :class:`~click.Context` 一起工作的语法分析器。
     """
 
     def __init__(self, ctx=None):
