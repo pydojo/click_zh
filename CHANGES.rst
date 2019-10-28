@@ -1,4 +1,4 @@
-Click Changelog
+Click 变更日志
 ===============
 
 Version 8.0
